@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Battle of Bands ft. Gemini Lyria — Certificate Access</title>
+<style>
+  :root {
+    --bg-base: #0a0e1a;
+    --bg-panel: #0f1525;
+    --bg-panel-2: #131a2e;
+    --line: rgba(255,255,255,0.08);
+    --text-main: #eef1f8;
+    --text-dim: #8993ab;
+    --g-blue: #4285F4;
+    --g-red: #EA4335;
+    --g-yellow: #FBBC05;
+    --g-green: #34A853;
+    --gem-grad: linear-gradient(135deg, #4285F4 0%, #9b6bff 50%, #EA4335 100%);
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg-base);
+    color: var(--text-main);
+    font-family: 'Segoe UI', system-ui, -apple-system, Roboto, sans-serif;
+    overflow-x: hidden;
+  }
+
+  body {
+    background-image:
+      radial-gradient(circle at 15% 10%, rgba(66,133,244,0.10), transparent 40%),
+      radial-gradient(circle at 85% 0%, rgba(155,107,255,0.10), transparent 45%),
+      radial-gradient(circle at 50% 100%, rgba(234,67,53,0.06), transparent 50%);
+  }
+
+  .wrap {
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 0 24px 80px;
+  }
+
+  /* ===== Top bar ===== */
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 28px 0 18px;
+  }
+  .google-logo {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+  .google-logo span:nth-child(1) { color: var(--g-blue); }
+  .google-logo span:nth-child(2) { color: var(--g-red); }
+  .google-logo span:nth-child(3) { color: var(--g-yellow); }
+  .google-logo span:nth-child(4) { color: var(--g-blue); }
+  .google-logo span:nth-child(5) { color: var(--g-green); }
+  .google-logo span:nth-child(6) { color: var(--g-red); }
+
+  .gemini-tag {
+    font-size: 14px;
+    font-weight: 600;
+    background: var(--gem-grad);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    letter-spacing: 0.3px;
+  }
+
+  /* ===== Hero ===== */
+  .hero {
+    display: flex;
+    align-items: center;
+    gap: 36px;
+    padding: 28px 0 8px;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 40px;
+  }
+  .hero-photo {
+    flex-shrink: 0;
+    width: 168px;
+    height: 168px;
+    border-radius: 24px;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.12);
+    position: relative;
+    box-shadow: 0 0 0 1px rgba(155,107,255,0.15), 0 18px 40px -10px rgba(66,133,244,0.25);
+  }
+  .hero-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 22%;
+    display: block;
+  }
+  .hero-text { flex: 1; min-width: 0; }
+  .eyebrow {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1.6px;
+    color: var(--text-dim);
+    margin-bottom: 8px;
+  }
+  .hero-name {
+    font-size: 34px;
+    font-weight: 700;
+    margin: 0 0 6px;
+    letter-spacing: -0.3px;
+  }
+  .hero-role {
+    font-size: 15.5px;
+    font-weight: 600;
+    background: var(--gem-grad);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    margin-bottom: 10px;
+  }
+  .hero-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 18px;
+    font-size: 13.5px;
+    color: var(--text-dim);
+  }
+  .hero-meta b { color: var(--text-main); font-weight: 600; }
+  .gid-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border: 1px solid rgba(155,107,255,0.35);
+    background: rgba(155,107,255,0.08);
+    border-radius: 100px;
+    padding: 4px 12px;
+    font-size: 13px;
+    color: #c8b8ff;
+    font-weight: 600;
+  }
+
+  /* ===== Section labels ===== */
+  .section-label {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1.6px;
+    color: var(--text-dim);
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-label::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--line);
+  }
+
+  /* ===== Event card ===== */
+  .event-card {
+    background: linear-gradient(180deg, var(--bg-panel), var(--bg-panel-2));
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    padding: 32px;
+    margin-bottom: 40px;
+    position: relative;
+    overflow: hidden;
+  }
+  .event-card::before {
+    content: "";
+    position: absolute;
+    top: -60px;
+    right: -60px;
+    width: 220px;
+    height: 220px;
+    background: radial-gradient(circle, rgba(155,107,255,0.18), transparent 70%);
+    pointer-events: none;
+  }
+  .event-title {
+    font-size: 26px;
+    font-weight: 700;
+    margin: 0 0 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .event-tagline {
+    font-size: 15px;
+    color: var(--text-dim);
+    margin: 0 0 22px;
+    line-height: 1.6;
+  }
+  .event-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 22px;
+  }
+  .info-chip {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 14px 16px;
+  }
+  .info-chip .label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-dim);
+    margin-bottom: 6px;
+  }
+  .info-chip .value {
+    font-size: 15px;
+    font-weight: 600;
+  }
+
+  .brief-block {
+    background: rgba(255,255,255,0.025);
+    border-left: 2px solid var(--g-blue);
+    border-radius: 0 10px 10px 0;
+    padding: 16px 20px;
+    font-size: 14px;
+    line-height: 1.75;
+    color: #c2c8da;
+  }
+  .brief-block strong { color: var(--text-main); }
+  .brief-block ol {
+    margin: 10px 0 0;
+    padding-left: 20px;
+  }
+  .brief-block li { margin-bottom: 4px; }
+
+  .prize-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 18px;
+    font-size: 14px;
+    color: var(--text-dim);
+  }
+  .prize-row b {
+    color: var(--g-yellow);
+    font-weight: 700;
+  }
+
+  /* ===== Certificate CTA ===== */
+  .cta-card {
+    background: var(--gem-grad);
+    border-radius: 20px;
+    padding: 3px;
+    margin-bottom: 44px;
+  }
+  .cta-inner {
+    background: #0c1020;
+    border-radius: 18px;
+    padding: 36px;
+    text-align: center;
+  }
+  .cta-inner h2 {
+    margin: 0 0 8px;
+    font-size: 22px;
+    font-weight: 700;
+  }
+  .cta-inner p {
+    margin: 0 0 22px;
+    font-size: 14.5px;
+    color: var(--text-dim);
+    max-width: 480px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.6;
+  }
+  .cta-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--text-main);
+    color: #0c1020;
+    font-weight: 700;
+    font-size: 15px;
+    padding: 14px 30px;
+    border-radius: 100px;
+    text-decoration: none;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .cta-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 24px -8px rgba(255,255,255,0.25);
+  }
+  .cta-note {
+    margin-top: 16px;
+    font-size: 12px;
+    color: var(--text-dim);
+  }
+
+  /* ===== Footer ===== */
+  .footer {
+    border-top: 1px solid var(--line);
+    padding-top: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .footer-left {
+    font-size: 13px;
+    color: var(--text-dim);
+  }
+  .footer-left b { color: var(--text-main); }
+  .social-links {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .social-links a {
+    font-size: 13px;
+    color: var(--text-main);
+    text-decoration: none;
+    padding: 8px 16px;
+    border-radius: 100px;
+    border: 1px solid var(--line);
+    background: rgba(255,255,255,0.03);
+    transition: border-color 0.15s ease, background 0.15s ease;
+  }
+  .social-links a:hover {
+    border-color: rgba(155,107,255,0.4);
+    background: rgba(155,107,255,0.08);
+  }
+
+  .hashtag-row {
+    text-align: center;
+    margin-top: 36px;
+    font-size: 13px;
+    color: var(--text-dim);
+  }
+  .hashtag-row span {
+    background: var(--gem-grad);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    font-weight: 700;
+  }
+
+  @media (max-width: 700px) {
+    .hero { flex-direction: column; text-align: center; }
+    .hero-meta { justify-content: center; }
+    .event-grid { grid-template-columns: 1fr; }
+    .footer { flex-direction: column; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="topbar">
+    <div class="google-logo"><span>G</span><span>o</span><span>o</span><span>g</span><span>l</span><span>e</span></div>
+    <div class="gemini-tag">✦ Gemini Student Ambassador</div>
+  </div>
+
+  <div class="hero">
+    <div class="hero-photo">
+      <img src="sachin.jpg" alt="Sachin Kumar">
+    </div>
+    <div class="hero-text">
+      <div class="eyebrow">Hosted By</div>
+      <h1 class="hero-name">Sachin Kumar</h1>
+      <div class="hero-role">Google Gemini Student Ambassador · 2026</div>
+      <div class="hero-meta">
+        <span class="gid-pill">✦ GID: 5317</span>
+        <span><b>Samrat Vikramaditya Viswavidyalaya</b>, Ujjain</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-label">Event</div>
+  <div class="event-card">
+    <h2 class="event-title">🎶 Battle of Bands ft. Gemini Lyria</h2>
+    <p class="event-tagline">Where music meets AI — your campus, your sound, your crew.</p>
+
+    <div class="event-grid">
+      <div class="info-chip">
+        <div class="label">Date</div>
+        <div class="value">21 June 2026</div>
+      </div>
+      <div class="info-chip">
+        <div class="label">Format</div>
+        <div class="value">Live Music Night</div>
+      </div>
+      <div class="info-chip">
+        <div class="label">Powered By</div>
+        <div class="value">Nano Banana + Lyria</div>
+      </div>
+    </div>
+
+    <div class="brief-block">
+      <strong>The Brief:</strong> Form a band. Make a poster. Drop a track. The room decides who wins.
+      <ol>
+        <li>Form a team — 3 people max. Give your band a name.</li>
+        <li>Open Nano Banana — generate your band poster: name, vibe, aesthetic.</li>
+        <li>Open Lyria — write a short brief using Band Name / Campus Vibe / Your Beef / One Word That Defines Your Crew, then generate your anthem.</li>
+        <li>Present to the room — poster on screen, track playing, 60 seconds.</li>
+        <li>Room votes: <em>This Slaps</em> or <em>This Flops</em>.</li>
+      </ol>
+    </div>
+
+    <div class="prize-row">
+      🏆 National winning band takes home <b>Google Pixel Buds 2a</b> for the whole crew.
+    </div>
+  </div>
+
+  <div class="cta-card">
+    <div class="cta-inner">
+      <h2>Access Your Certificate</h2>
+      <p>Every participant's certificate is stored in a shared drive folder. Tap below to find and download yours.</p>
+      <a class="cta-btn" href="https://drive.google.com/drive/folders/1-tfox_yHRFV-gwJmtsafGac8cbJFl6qT?usp=sharing" target="_blank" rel="noopener">
+        📂 Open Certificate Folder
+      </a>
+      <div class="cta-note">Hosted on Google Drive · Opens in a new tab</div>
+    </div>
+  </div>
+
+  <div class="hashtag-row">
+    Share your poster and track with <span>#TeamGemini</span> — tag your crew, challenge another campus.
+  </div>
+
+  <div class="footer" style="margin-top:48px;">
+    <div class="footer-left">
+      <b>Sachin Kumar</b> · Google Gemini Student Ambassador 2026
+    </div>
+    <div class="social-links">
+      <a href="https://www.linkedin.com/in/sachin-kumar-08b390359/" target="_blank" rel="noopener">LinkedIn</a>
+      <a href="https://github.com/Sach-in-SE" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://www.instagram.com/official__luc_ky/" target="_blank" rel="noopener">Instagram</a>
+      <a href="https://sa-chin.dev/" target="_blank" rel="noopener">Portfolio</a>
+      <a href="https://chat.whatsapp.com/KKxuHLjVFm39ivmTOZAG9I" target="_blank" rel="noopener">WhatsApp Group</a>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
