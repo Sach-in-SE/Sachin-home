@@ -1,0 +1,2891 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DevOps Fundamentals — Lucky's Learning Platform</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Syne:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap');
+
+  :root {
+    --bg-primary: #0a0e1a;
+    --bg-secondary: #0f1525;
+    --bg-card: #131929;
+    --bg-card-hover: #1a2135;
+    --sidebar-bg: #080c18;
+    --accent-blue: #4f9cf9;
+    --accent-cyan: #00d4ff;
+    --accent-green: #00ff9d;
+    --accent-yellow: #ffd93d;
+    --accent-orange: #ff8c42;
+    --accent-red: #ff4d6d;
+    --accent-purple: #c77dff;
+    --text-primary: #e8edf5;
+    --text-secondary: #8892a4;
+    --text-muted: #4a5568;
+    --border: #1e2d45;
+    --border-active: #4f9cf9;
+    --code-bg: #0d1117;
+    --code-border: #1e2d45;
+    --sidebar-width: 270px;
+    --header-height: 60px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    height: var(--header-height);
+    background: rgba(8,12,24,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; padding: 0 24px;
+    gap: 16px;
+  }
+  .header-logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800; font-size: 1.1rem;
+    color: var(--accent-cyan);
+    letter-spacing: -0.5px;
+    white-space: nowrap;
+  }
+  .header-logo span { color: var(--accent-green); }
+  .header-subtitle {
+    font-size: 0.72rem; color: var(--text-muted);
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.08em;
+  }
+  .hamburger {
+    display: none; background: none; border: none;
+    color: var(--text-primary); cursor: pointer; padding: 4px;
+    font-size: 1.3rem; margin-left: auto;
+  }
+  .progress-bar {
+    position: fixed; top: var(--header-height); left: 0; right: 0;
+    height: 2px; background: var(--border); z-index: 99;
+  }
+  .progress-fill {
+    height: 100%; width: 0%;
+    background: linear-gradient(90deg, var(--accent-blue), var(--accent-cyan));
+    transition: width 0.3s ease;
+  }
+
+  /* ── LAYOUT ── */
+  .layout { display: flex; padding-top: var(--header-height); min-height: 100vh; }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    width: var(--sidebar-width); background: var(--sidebar-bg);
+    border-right: 1px solid var(--border);
+    position: fixed; top: var(--header-height); bottom: 0;
+    overflow-y: auto; padding: 20px 0;
+    transition: transform 0.3s ease;
+    z-index: 90;
+  }
+  .sidebar::-webkit-scrollbar { width: 4px; }
+  .sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  .nav-group { margin-bottom: 8px; }
+  .nav-group-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.62rem; font-weight: 700;
+    color: var(--text-muted); letter-spacing: 0.12em;
+    text-transform: uppercase; padding: 10px 20px 6px;
+  }
+  .nav-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 20px; cursor: pointer;
+    color: var(--text-secondary); font-size: 0.82rem;
+    font-weight: 500; transition: all 0.2s;
+    border-left: 2px solid transparent;
+    position: relative;
+  }
+  .nav-item:hover { color: var(--text-primary); background: rgba(79,156,249,0.05); }
+  .nav-item.active {
+    color: var(--accent-cyan); border-left-color: var(--accent-cyan);
+    background: rgba(0,212,255,0.06);
+  }
+  .nav-icon { font-size: 0.9rem; width: 18px; text-align: center; }
+
+  /* ── MAIN CONTENT ── */
+  .main { margin-left: var(--sidebar-width); flex: 1; }
+  .section { display: none; padding: 40px 48px; max-width: 960px; animation: fadeIn 0.3s ease; }
+  .section.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* ── SECTION HEADER ── */
+  .section-hero {
+    padding: 36px 40px; margin-bottom: 32px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    position: relative; overflow: hidden;
+  }
+  .section-hero::before {
+    content: ''; position: absolute;
+    top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, var(--accent-blue), var(--accent-cyan), var(--accent-green));
+  }
+  .section-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem; font-weight: 700; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--accent-cyan);
+    background: rgba(0,212,255,0.08);
+    padding: 4px 10px; border-radius: 4px; display: inline-block; margin-bottom: 14px;
+  }
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 2.2rem; font-weight: 800;
+    color: var(--text-primary); line-height: 1.15; margin-bottom: 10px;
+    letter-spacing: -0.03em;
+  }
+  .section-desc { color: var(--text-secondary); font-size: 0.9rem; line-height: 1.7; max-width: 620px; }
+
+  /* ── TOPIC CARDS ── */
+  .topic-block {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 14px; margin-bottom: 24px; overflow: hidden;
+    transition: border-color 0.2s;
+  }
+  .topic-block:hover { border-color: rgba(79,156,249,0.3); }
+
+  .topic-header {
+    padding: 20px 24px; cursor: pointer;
+    display: flex; align-items: center; gap: 14px;
+    background: var(--bg-card);
+    transition: background 0.2s;
+  }
+  .topic-header:hover { background: var(--bg-card-hover); }
+  .topic-icon {
+    width: 38px; height: 38px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem; flex-shrink: 0;
+  }
+  .topic-title-wrap { flex: 1; }
+  .topic-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.05rem; font-weight: 700;
+    color: var(--text-primary); margin-bottom: 2px;
+  }
+  .topic-subtitle { font-size: 0.76rem; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; }
+  .topic-chevron { color: var(--text-muted); font-size: 0.8rem; transition: transform 0.3s; }
+  .topic-block.open .topic-chevron { transform: rotate(180deg); }
+
+  .topic-body { display: none; padding: 0 24px 24px; }
+  .topic-block.open .topic-body { display: block; }
+
+  /* ── CONTENT ELEMENTS ── */
+  h3 {
+    font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700;
+    color: var(--accent-blue); margin: 22px 0 10px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  h3::before { content: ''; display: block; width: 3px; height: 16px; background: var(--accent-blue); border-radius: 2px; }
+
+  p { color: var(--text-secondary); font-size: 0.87rem; line-height: 1.8; margin-bottom: 10px; }
+
+  strong { color: var(--accent-yellow); font-weight: 600; }
+
+  .keyword {
+    background: rgba(79,156,249,0.12); color: var(--accent-cyan);
+    padding: 1px 6px; border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace; font-size: 0.82em;
+  }
+
+  /* ── CODE BLOCKS ── */
+  .code-block {
+    background: var(--code-bg); border: 1px solid var(--code-border);
+    border-radius: 10px; margin: 14px 0; overflow: hidden;
+    position: relative;
+  }
+  .code-header {
+    background: #0f1520; padding: 8px 16px;
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 1px solid var(--code-border);
+  }
+  .code-lang {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem; color: var(--text-muted);
+    font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+  }
+  .copy-btn {
+    background: rgba(79,156,249,0.1); border: 1px solid rgba(79,156,249,0.2);
+    color: var(--accent-blue); font-size: 0.68rem; font-family: 'JetBrains Mono', monospace;
+    padding: 3px 10px; border-radius: 4px; cursor: pointer;
+    transition: all 0.2s;
+  }
+  .copy-btn:hover { background: rgba(79,156,249,0.2); }
+  .copy-btn.copied { color: var(--accent-green); border-color: rgba(0,255,157,0.3); }
+
+  pre {
+    padding: 18px 20px; overflow-x: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.82rem; line-height: 1.7;
+  }
+  code { color: #e2e8f0; }
+
+  /* Syntax colors */
+  .c-comment { color: #4a5568; font-style: italic; }
+  .c-keyword { color: #c77dff; }
+  .c-string { color: #00d4ff; }
+  .c-var { color: #ffd93d; }
+  .c-cmd { color: #00ff9d; }
+  .c-flag { color: #ff8c42; }
+  .c-num { color: #ff4d6d; }
+
+  /* ── CALLOUT BOXES ── */
+  .callout {
+    border-radius: 10px; padding: 14px 18px; margin: 14px 0;
+    display: flex; gap: 12px; align-items: flex-start;
+  }
+  .callout-icon { font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
+  .callout-content { font-size: 0.84rem; line-height: 1.75; }
+  .callout-title { font-weight: 700; margin-bottom: 4px; font-family: 'Syne', sans-serif; font-size: 0.82rem; }
+
+  .callout.tip { background: rgba(0,255,157,0.06); border: 1px solid rgba(0,255,157,0.2); }
+  .callout.tip .callout-content { color: #7fffd4; }
+  .callout.tip .callout-title { color: var(--accent-green); }
+
+  .callout.warning { background: rgba(255,140,66,0.06); border: 1px solid rgba(255,140,66,0.25); }
+  .callout.warning .callout-content { color: #ffb347; }
+  .callout.warning .callout-title { color: var(--accent-orange); }
+
+  .callout.danger { background: rgba(255,77,109,0.06); border: 1px solid rgba(255,77,109,0.25); }
+  .callout.danger .callout-content { color: #ff8fa3; }
+  .callout.danger .callout-title { color: var(--accent-red); }
+
+  .callout.info { background: rgba(79,156,249,0.06); border: 1px solid rgba(79,156,249,0.25); }
+  .callout.info .callout-content { color: #93c5fd; }
+  .callout.info .callout-title { color: var(--accent-blue); }
+
+  .callout.purple { background: rgba(199,125,255,0.06); border: 1px solid rgba(199,125,255,0.25); }
+  .callout.purple .callout-content { color: #d8b4fe; }
+  .callout.purple .callout-title { color: var(--accent-purple); }
+
+  /* ── TABLES ── */
+  .table-wrap { overflow-x: auto; margin: 14px 0; border-radius: 10px; border: 1px solid var(--border); }
+  table { width: 100%; border-collapse: collapse; }
+  th {
+    background: #0f1520; color: var(--accent-blue);
+    font-family: 'Syne', sans-serif; font-size: 0.78rem;
+    font-weight: 700; padding: 10px 16px; text-align: left;
+    border-bottom: 1px solid var(--border); letter-spacing: 0.05em;
+  }
+  td {
+    padding: 10px 16px; font-size: 0.82rem;
+    color: var(--text-secondary); border-bottom: 1px solid rgba(30,45,69,0.6);
+    font-family: 'JetBrains Mono', monospace;
+  }
+  td.desc { font-family: 'Inter', sans-serif; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(79,156,249,0.03); }
+
+  /* ── PILL TAGS ── */
+  .tag-row { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0; }
+  .tag {
+    font-family: 'JetBrains Mono', monospace; font-size: 0.73rem;
+    padding: 3px 10px; border-radius: 20px; font-weight: 500;
+  }
+  .tag.blue { background: rgba(79,156,249,0.12); color: var(--accent-blue); border: 1px solid rgba(79,156,249,0.25); }
+  .tag.green { background: rgba(0,255,157,0.08); color: var(--accent-green); border: 1px solid rgba(0,255,157,0.2); }
+  .tag.yellow { background: rgba(255,217,61,0.08); color: var(--accent-yellow); border: 1px solid rgba(255,217,61,0.2); }
+  .tag.red { background: rgba(255,77,109,0.08); color: var(--accent-red); border: 1px solid rgba(255,77,109,0.2); }
+
+  /* ── INTERVIEW Q&A ── */
+  .qa-item {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 10px; margin-bottom: 12px; overflow: hidden;
+  }
+  .qa-question {
+    padding: 14px 18px; cursor: pointer;
+    display: flex; align-items: flex-start; gap: 12px;
+    transition: background 0.2s;
+  }
+  .qa-question:hover { background: var(--bg-card-hover); }
+  .qa-q-badge {
+    background: rgba(79,156,249,0.15); color: var(--accent-blue);
+    font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; font-weight: 700;
+    padding: 2px 7px; border-radius: 4px; flex-shrink: 0; margin-top: 2px;
+  }
+  .qa-q-text { font-size: 0.87rem; font-weight: 600; color: var(--text-primary); flex: 1; line-height: 1.5; }
+  .qa-toggle { color: var(--text-muted); font-size: 0.75rem; flex-shrink: 0; margin-top: 2px; transition: transform 0.3s; }
+  .qa-item.open .qa-toggle { transform: rotate(180deg); }
+
+  .qa-answer {
+    display: none; padding: 14px 18px;
+    border-top: 1px solid var(--border);
+    background: rgba(0,0,0,0.2);
+  }
+  .qa-item.open .qa-answer { display: block; }
+  .qa-answer p { color: #93c5fd; font-size: 0.84rem; }
+
+  /* ── PRACTICE CARDS ── */
+  .practice-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0; }
+  .practice-card {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 12px; padding: 20px;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .practice-card:hover { border-color: rgba(0,255,157,0.3); transform: translateY(-2px); }
+  .practice-card-label {
+    font-family: 'JetBrains Mono', monospace; font-size: 0.62rem;
+    font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .practice-card h4 {
+    font-family: 'Syne', sans-serif; font-size: 0.92rem; font-weight: 700;
+    color: var(--text-primary); margin-bottom: 8px;
+  }
+  .practice-card p { font-size: 0.8rem; margin: 0; }
+
+  /* ── MISTAKE / TRAP CARDS ── */
+  .mistake-item {
+    display: flex; gap: 14px; padding: 14px 18px;
+    background: rgba(255,77,109,0.04); border: 1px solid rgba(255,77,109,0.15);
+    border-radius: 10px; margin-bottom: 10px;
+  }
+  .mistake-icon { font-size: 1.1rem; flex-shrink: 0; }
+  .mistake-content { font-size: 0.83rem; line-height: 1.7; }
+  .mistake-title { color: var(--accent-red); font-weight: 700; margin-bottom: 4px; }
+  .mistake-body { color: var(--text-secondary); }
+
+  .trap-item {
+    display: flex; gap: 14px; padding: 14px 18px;
+    background: rgba(199,125,255,0.04); border: 1px solid rgba(199,125,255,0.2);
+    border-radius: 10px; margin-bottom: 10px;
+  }
+  .trap-icon { font-size: 1.1rem; flex-shrink: 0; }
+  .trap-content { font-size: 0.83rem; line-height: 1.7; }
+  .trap-title { color: var(--accent-purple); font-weight: 700; margin-bottom: 4px; }
+  .trap-body { color: var(--text-secondary); }
+
+  /* ── STEPS ── */
+  .step-list { margin: 14px 0; }
+  .step-item {
+    display: flex; gap: 14px; margin-bottom: 12px;
+    align-items: flex-start;
+  }
+  .step-num {
+    width: 26px; height: 26px; border-radius: 50%;
+    background: rgba(79,156,249,0.15); color: var(--accent-blue);
+    font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; font-weight: 700;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .step-content { font-size: 0.84rem; color: var(--text-secondary); line-height: 1.7; }
+  .step-content strong { color: var(--text-primary); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    .sidebar { transform: translateX(-100%); }
+    .sidebar.open { transform: translateX(0); }
+    .main { margin-left: 0; }
+    .section { padding: 28px 24px; }
+    .hamburger { display: flex; }
+    .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 89; }
+    .sidebar-overlay.show { display: block; }
+    .practice-grid { grid-template-columns: 1fr; }
+  }
+
+  @media (max-width: 600px) {
+    .section-title { font-size: 1.6rem; }
+    .section { padding: 20px 16px; }
+    .section-hero { padding: 24px 20px; }
+  }
+
+  /* ── MISC UTILS ── */
+  .divider { height: 1px; background: var(--border); margin: 20px 0; }
+  .flex-row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; margin-bottom: 10px; }
+  .badge {
+    font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; font-weight: 700;
+    padding: 3px 8px; border-radius: 4px; letter-spacing: 0.05em;
+  }
+  .badge.easy { background: rgba(0,255,157,0.1); color: var(--accent-green); }
+  .badge.medium { background: rgba(255,217,61,0.1); color: var(--accent-yellow); }
+  .badge.hard { background: rgba(255,77,109,0.1); color: var(--accent-red); }
+  .badge.interview { background: rgba(199,125,255,0.1); color: var(--accent-purple); }
+
+  /* Home page cards */
+  .home-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin: 24px 0; }
+  .home-card {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 14px; padding: 24px;
+    cursor: pointer; transition: all 0.25s;
+    position: relative; overflow: hidden;
+  }
+  .home-card::after {
+    content: '→'; position: absolute;
+    bottom: 20px; right: 20px; font-size: 1.1rem;
+    opacity: 0; transition: opacity 0.2s, right 0.2s;
+    color: var(--accent-cyan);
+  }
+  .home-card:hover { border-color: rgba(0,212,255,0.35); transform: translateY(-3px); }
+  .home-card:hover::after { opacity: 1; right: 16px; }
+  .home-card-icon { font-size: 1.8rem; margin-bottom: 12px; }
+  .home-card-title {
+    font-family: 'Syne', sans-serif; font-size: 1.05rem; font-weight: 700;
+    color: var(--text-primary); margin-bottom: 6px;
+  }
+  .home-card-desc { font-size: 0.79rem; color: var(--text-muted); line-height: 1.6; }
+
+  @media (max-width: 640px) { .home-grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="header-logo">Dev<span>Ops</span>.notes</div>
+  <div class="header-subtitle">// beginner → production-ready</div>
+  <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu">☰</button>
+</header>
+<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<!-- LAYOUT -->
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <nav class="sidebar" id="sidebar">
+    <div class="nav-group">
+      <div class="nav-group-label">Start Here</div>
+      <div class="nav-item active" data-section="home"><span class="nav-icon">🏠</span> Home</div>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-label">Linux Fundamentals</div>
+      <div class="nav-item" data-section="linux-origin"><span class="nav-icon">🐚</span> Shell — Origin & Types</div>
+      <div class="nav-item" data-section="linux-cmds"><span class="nav-icon">💻</span> Basic Commands</div>
+      <div class="nav-item" data-section="linux-cmdref"><span class="nav-icon">📋</span> Full Command Reference</div>
+      <div class="nav-item" data-section="linux-perms"><span class="nav-icon">🔐</span> File Permissions</div>
+      <div class="nav-item" data-section="linux-links"><span class="nav-icon">🔗</span> Soft & Hard Links</div>
+      <div class="nav-item" data-section="linux-proc"><span class="nav-icon">⚙️</span> Processes</div>
+      <div class="nav-item" data-section="linux-redir"><span class="nav-icon">🔀</span> Redirection & Pipes</div>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-label">Shell Scripting</div>
+      <div class="nav-item" data-section="sh-vars"><span class="nav-icon">📦</span> Variables & Input</div>
+      <div class="nav-item" data-section="sh-cond"><span class="nav-icon">🌿</span> Conditions & Operators</div>
+      <div class="nav-item" data-section="sh-loops"><span class="nav-icon">🔁</span> Loops</div>
+      <div class="nav-item" data-section="sh-func"><span class="nav-icon">🧩</span> Functions</div>
+      <div class="nav-item" data-section="sh-err"><span class="nav-icon">🛡️</span> Error Handling</div>
+      <div class="nav-item" data-section="sh-quote"><span class="nav-icon">✏️</span> Quoting Rules</div>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-label">Git & GitHub</div>
+      <div class="nav-item" data-section="git-basics"><span class="nav-icon">🌿</span> Git — Core Concepts</div>
+      <div class="nav-item" data-section="git-commands"><span class="nav-icon">⌨️</span> Git Commands</div>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-label">DevOps Core</div>
+      <div class="nav-item" data-section="devops-what"><span class="nav-icon">🚀</span> What is DevOps</div>
+      <div class="nav-item" data-section="devops-cicd"><span class="nav-icon">🔄</span> CI/CD Basics</div>
+      <div class="nav-item" data-section="devops-scripts"><span class="nav-icon">📜</span> Real Script Examples</div>
+      <div class="nav-item" data-section="devops-tools"><span class="nav-icon">🔧</span> Tools & Commands</div>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-label">Practice & Interviews</div>
+      <div class="nav-item" data-section="practice"><span class="nav-icon">🧪</span> Practice Tasks</div>
+      <div class="nav-item" data-section="mistakes"><span class="nav-icon">❌</span> Beginner Mistakes</div>
+      <div class="nav-item" data-section="traps"><span class="nav-icon">🪤</span> Interview Traps</div>
+      <div class="nav-item" data-section="interview"><span class="nav-icon">🎤</span> Interview Q&A</div>
+    </div>
+  </nav>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- ══════════════════════════════ HOME ══════════════════════════════ -->
+    <section class="section active" id="home">
+      <div class="section-hero">
+        <div class="section-tag">Welcome, Lucky 👋</div>
+        <div class="section-title">DevOps Fundamentals<br>Learning Platform</div>
+        <div class="section-desc">A structured, interview-focused companion for your Cloud & DevOps journey. Built for intuition-first learning — from Linux basics to production scripts.</div>
+      </div>
+      <div class="home-grid">
+        <div class="home-card" onclick="navigate('linux-origin')">
+          <div class="home-card-icon">💻</div>
+          <div class="home-card-title">Linux Fundamentals</div>
+          <div class="home-card-desc">Shell history, commands, permissions, processes, pipes — the daily toolkit of every DevOps engineer.</div>
+        </div>
+        <div class="home-card" onclick="navigate('sh-vars')">
+          <div class="home-card-icon">📜</div>
+          <div class="home-card-title">Shell Scripting</div>
+          <div class="home-card-desc">Variables, loops, functions, error handling — automate everything the Unix way.</div>
+        </div>
+        <div class="home-card" onclick="navigate('git-basics')">
+          <div class="home-card-icon">🌿</div>
+          <div class="home-card-title">Git & GitHub</div>
+          <div class="home-card-desc">Version control by Linus Torvalds — track every change, collaborate, and ship with confidence.</div>
+        </div>
+        <div class="home-card" onclick="navigate('devops-what')">
+          <div class="home-card-icon">🚀</div>
+          <div class="home-card-title">DevOps Core</div>
+          <div class="home-card-desc">CI/CD, deployment scripts, automation mindset, and real production patterns.</div>
+        </div>
+        <div class="home-card" onclick="navigate('linux-cmdref')">
+          <div class="home-card-icon">📋</div>
+          <div class="home-card-title">Full Command Reference</div>
+          <div class="home-card-desc">All 60+ Linux commands in one place — with meaning, syntax, and quick examples.</div>
+        </div>
+        <div class="home-card" onclick="navigate('interview')">
+          <div class="home-card-icon">🎤</div>
+          <div class="home-card-title">Interview Prep</div>
+          <div class="home-card-desc">Q&A, traps, beginner mistakes, and practice challenges — all in one place.</div>
+        </div>
+      </div>
+      <div class="callout info">
+        <div class="callout-icon">💡</div>
+        <div class="callout-content">
+          <div class="callout-title">How to use this platform</div>
+          Each topic follows: <strong>Intuition → Technical Explanation → Examples → Common Mistakes → Pro Tips.</strong> Don't skip the mistakes section — that's where interviews are won or lost.
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════ SHELL ORIGIN ══════════════════════════════ -->
+    <section class="section" id="linux-origin">
+      <div class="section-hero">
+        <div class="section-tag">Linux Fundamentals · 00</div>
+        <div class="section-title">Shell — Origin & Types</div>
+        <div class="section-desc">Before writing scripts, understand WHAT a shell is, WHO created it, and WHY it matters for DevOps.</div>
+      </div>
+
+      <div class="topic-block open">
+        <div class="topic-header" onclick="toggleTopic(this)">
+          <div class="topic-icon" style="background:rgba(0,212,255,0.1)">🐚</div>
+          <div class="topic-title-wrap">
+            <div class="topic-title">What is a Shell?</div>
+            <div class="topic-subtitle">Interface · Interpreter · Bridge between User and Kernel</div>
+          </div>
+          <div class="topic-chevron">▼</div>
+        </div>
+        <div class="topic-body">
+          <h3>💡 Intuition</h3>
+          <p>Think of Linux like a car engine (the Kernel). You don't touch the engine directly — you use the steering wheel, pedals, and gear shift. The <strong>Shell is that interface</strong> — it takes your commands and passes them to the OS kernel, which then communicates with hardware.</p>
+
+          <div class="callout info">
+            <div class="callout-icon">⚙️</div>
+            <div class="callout-content">
+              <div class="callout-title">The Layers — Top to Bottom</div>
+              <strong>You</strong> → type commands → <strong>Shell</strong> (interprets) → <strong>Kernel</strong> (executes) → <strong>Hardware</strong> (CPU, RAM, Disk)
+            </div>
+          </div>
+
+          <h3>⚙️ Technical Definition</h3>
+          <p>A Shell is a <strong>Command Interpreter</strong> — it reads the commands you type, interprets them, and asks the kernel to execute them. It acts as the <strong>interface between the user and the OS (Linux Kernel)</strong>.</p>
+
+          <div class="table-wrap">
+            <table>
+              <tr><th>Shell</th><th>Creator</th><th>Year</th><th class="desc">Key Use</th></tr>
+              <tr><td>sh (Bourne Shell)</td><td>Stephen Bourne</td><td>1979</td><td class="desc">The original Unix shell. Pioneered scripting. Location: <code>/bin/sh</code></td></tr>
+              <tr><td>bash (Bourne Again SH)</td><td>Brian Fox (GNU)</td><td>1989</td><td class="desc">Most common today. Default in Ubuntu/Debian. Modern DevOps scripting tool.</td></tr>
+              <tr><td>zsh</td><td>Paul Falstad</td><td>1990</td><td class="desc">Default on macOS. More features than bash.</td></tr>
+              <tr><td>sh (dash)</td><td>—</td><td>—</td><td class="desc">Lightweight POSIX sh, faster for system scripts</td></tr>
+            </table>
+          </div>
+
+          <h3>🔑 Why This Matters for DevOps</h3>
+          <div class="step-list">
+            <div class="step-item">
+              <div class="step-num">1</div>
+              <div class="step-content"><strong>Bourne Shell (sh)</strong> started shell scripting. It proved you could automate tasks by writing commands in a file and running them.</div>
+            </div>
+            <div class="step-item">
+              <div class="step-num">2</div>
+              <div class="step-content"><strong>Bash</strong> extended sh with modern features — arrays, better string handling, process substitution. It's the default choice for all DevOps scripts.</div>
+            </div>
+            <div class="step-item">
+              <div class="step-num">3</div>
+              <div class="step-content"><strong>Shell scripting = automation ka base</strong> — CI/CD pipelines, deployment scripts, health checks, backups — all of it runs in shell.</div>
+            </div>
+          </div>
+
+          <div class="callout tip">
+            <div class="callout-icon">💀</div>
+            <div class="callout-content">
+              <div class="callout-title">Pro Tip — sh vs bash</div>
+              <code>/bin/sh</code> on Ubuntu is actually <strong>dash</strong> (not bash) — it's faster but missing bash features. Always write <code>#!/bin/bash</code> at the top of your scripts to guarantee bash is used. Never assume <code>sh</code> = bash.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="topic-block">
+        <div class="topic-header" onclick="toggleTopic(this)">
+          <div class="topic-icon" style="background:rgba(0,255,157,0.1)">📄</div>
+          <div class="topic-title-wrap">
+            <div class="topic-title">Writing Your First Script — The Essentials</div>
+            <div class="topic-subtitle">#!/bin/bash · .sh · chmod +x · ./script.sh</div>
+          </div>
+          <div class="topic-chevron">▼</div>
+        </div>
+        <div class="topic-body">
+          <h3>💡 Intuition</h3>
+          <p>A shell script is just a text file with a list of commands. But for it to be a proper, runnable script, 4 things need to happen:</p>
+
+          <div class="step-list">
+            <div class="step-item">
+              <div class="step-num">1</div>
+              <div class="step-content"><strong>Shebang line</strong> — <code>#!/bin/bash</code> must be the very first line. It tells the OS which interpreter to use. Without it, behavior is unpredictable.</div>
+            </div>
+            <div class="step-item">
+              <div class="step-num">2</div>
+              <div class="step-content"><strong>.sh extension</strong> — Save the file as <code>script.sh</code>. The extension is a convention (Linux doesn't require it) but makes it clear this is a shell script.</div>
+            </div>
+            <div class="step-item">
+              <div class="step-num">3</div>
+              <div class="step-content"><strong>Make it executable</strong> — Run <code>chmod +x script.sh</code>. Without this, Linux refuses to run it as a program.</div>
+            </div>
+            <div class="step-item">
+              <div class="step-num">4</div>
+              <div class="step-content"><strong>Run it</strong> — Use <code>./script.sh</code> (the <code>./</code> means "in current directory"). Or use the full path.</div>
+            </div>
+          </div>
+
+          <div class="code-block">
+            <div class="code-header"><span class="code-lang">bash — complete first script workflow</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre><code><span class="c-comment"># Step 1: Create the file</span>
+<span class="c-cmd">nano</span> myscript.sh
+
+<span class="c-comment"># Step 2: Write inside the file</span>
+<span class="c-keyword">#!/bin/bash</span>          <span class="c-comment"># ← mandatory shebang. BEST PRACTICE.</span>
+<span class="c-cmd">echo</span> <span class="c-string">"Hello DevOps!"</span>
+<span class="c-cmd">echo</span> <span class="c-string">"Today is: $(date)"</span>
+
+<span class="c-comment"># Step 3: Make executable</span>
+<span class="c-cmd">chmod</span> +x myscript.sh
+
+<span class="c-comment"># Step 4: Run it</span>
+<span class="c-cmd">./myscript.sh</span>
+
+<span class="c-comment"># Alternative: run with bash directly (no chmod needed)</span>
+<span class="c-cmd">bash</span> myscript.sh</code></pre>
+          </div>
+
+          <div class="callout warning">
+            <div class="callout-icon">⚠️</div>
+            <div class="callout-content">
+              <div class="callout-title">Why ./ before the script?</div>
+              Linux only looks for programs in directories listed in <code>$PATH</code>. Your current folder is NOT in PATH by default. The <code>./</code> prefix tells bash: "look in THIS folder, not PATH". Without it, bash says "command not found".
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════ LINUX COMMANDS ══════════════════════════════ -->
+    <section class="section" id="linux-cmds">
+      <div class="section-hero">
+        <div class="section-tag">Linux Fundamentals · 01</div>
+        <div class="section-title">Basic Commands</div>
+        <div class="section-desc">The commands you'll type a thousand times as a DevOps engineer. These aren't just syntax — they're how you think on a server.</div>
+      </div>
+
+      <!-- Navigation & Files -->
+      <div class="topic-block open">
+        <div class="topic-header" onclick="toggleTopic(this)">
+          <div class="topic-icon" style="background:rgba(79,156,249,0.12)">📁</div>
+          <div class="topic-title-wrap">
+            <div class="topic-title">Navigation & File Management</div>
+            <div class="topic-subtitle">ls · cd · pwd · mkdir · rm · cp · mv · find</div>
+          </div>
+          <div class="topic-chevron">▼</div>
+        </div>
+        <div class="topic-body">
+          <h3>💡 Intuition</h3>
+          <p>Think of the filesystem as a tree. <strong>pwd</strong> tells you where you are. <strong>ls</strong> shows what's around you. <strong>cd</strong> moves you. Every DevOps task — deploying code, checking logs — starts with navigating to the right place.</p>
+
+          <h3>⚙️ Technical</h3>
+          <div class="table-wrap">
+            <table>
+              <tr><th>Command</th><th>Syntax</th><th class="desc">What it does</th></tr>
+              <tr><td>ls</td><td>ls -la /path</td><td class="desc">List files (-l = long format, -a = hidden files)</td></tr>
+              <tr><td>cd</td><td>cd /var/log</td><td class="desc">Change directory. <code>cd ~</code> = home, <code>cd -</code> = previous dir</td></tr>
+              <tr><td>pwd</td><td>pwd</td><td class="desc">Print working directory (where are you)</td></tr>
+              <tr><td>mkdir</td><td>mkdir -p a/b/c</td><td class="desc">Make directory. -p creates parents if missing</td></tr>
+              <tr><td>rm</td><td>rm -rf dir/</td><td class="desc">Remove. -r = recursive, -f = force (no prompt)</td></tr>
+              <tr><td>cp</td><td>cp -r src/ dst/</td><td class="desc">Copy files or directories</td></tr>
+              <tr><td>mv</td><td>mv old new</td><td class="desc">Move or rename</td></tr>
+              <tr><td>find</td><td>find / -name "*.log"</td><td class="desc">Search for files by name, type, size, time</td></tr>
+            </table>
+          </div>
+
+          <h3>💻 Examples</h3>
+          <div class="code-block">
+            <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre><code><span class="c-comment"># List all files including hidden, human-readable sizes</span>
+<span class="c-cmd">ls</span> <span class="c-flag">-lah</span> /var/log/
+
+<span class="c-comment"># Find all .log files modified in last 7 days</span>
+<span class="c-cmd">find</span> /var/log <span class="c-flag">-name</span> <span class="c-string">"*.log"</span> <span class="c-flag">-mtime</span> <span class="c-num">-7</span>
+
+<span class="c-comment"># Find files larger than 100MB</span>
+<span class="c-cmd">find</span> / <span class="c-flag">-size</span> +100M <span class="c-flag">-type</span> f 2>/dev/null
+
+<span class="c-comment"># Create nested dirs in one shot</span>
+<span class="c-cmd">mkdir</span> <span class="c-flag">-p</span> /opt/myapp/{logs,config,scripts}
+
+<span class="c-comment"># Safe remove: preview before deleting</span>
+<span class="c-cmd">find</span> . <span class="c-flag">-name</span> <span class="c-string">"*.tmp"</span> <span class="c-flag">-exec</span> echo {} \;
+<span class="c-comment"># Then actually delete:</span>
+<span class="c-cmd">find</span> . <span class="c-flag">-name</span> <span class="c-string">"*.tmp"</span> <span class="c-flag">-delete</span></code></pre>
+          </div>
+
+          <div class="callout danger">
+            <div class="callout-icon">❌</div>
+            <div class="callout-content">
+              <div class="callout-title">Common Mistake</div>
+              <code>rm -rf /</code> or <code>rm -rf /*</code> — these delete the ENTIRE system. Always double-check your path before running rm -rf. Real engineers have lost production servers this way.
+            </div>
+          </div>
+
+          <div class="callout tip">
+            <div class="callout-icon">💀</div>
+            <div class="callout-content">
+              <div class="callout-title">Pro Tips</div>
+              Use <span class="keyword">ls -lah</span> instead of just <span class="keyword">ls</span> — always. The 'h' flag shows human-readable sizes. Use <span class="keyword">cd -</span> to toggle between two directories instantly. Use <span class="keyword">find ... -exec</span> for batch operations on files.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- grep & text tools -->
+      <div class="topic-block">
+        <div class="topic-header" onclick="toggleTopic(this)">
+          <div class="topic-icon" style="background:rgba(0,255,157,0.1)">🔍</div>
+          <div class="topic-title-wrap">
+            <div class="topic-title">Text Searching & Manipulation</div>
+            <div class="topic-subtitle">grep · awk · sed · cut · sort · uniq · wc</div>
+          </div>
+          <div class="topic-chevron">▼</div>
+        </div>
+        <div class="topic-body">
+          <h3>💡 Intuition</h3>
+          <p>In DevOps, you'll constantly search through logs, config files, and outputs. <strong>grep</strong> is your most-used search tool. <strong>awk</strong> and <strong>sed</strong> are for transforming text. Think of them as spreadsheet operations, but in the terminal.</p>
+
+          <h3>💻 Examples</h3>
+          <div class="code-block">
+            <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre><code><span class="c-comment"># grep: search for pattern in file</span>
+<span class="c-cmd">grep</span> <span class="c-string">"ERROR"</span> /var/log/app.log
+<span class="c-cmd">grep</span> <span class="c-flag">-i</span> <span class="c-string">"error"</span> app.log        <span class="c-comment"># case insensitive</span>
+<span class="c-cmd">grep</span> <span class="c-flag">-r</span> <span class="c-string">"DB_HOST"</span> /etc/          <span class="c-comment"># recursive search</span>
+<span class="c-cmd">grep</span> <span class="c-flag">-v</span> <span class="c-string">"DEBUG"</span> app.log         <span class="c-comment"># invert: lines NOT matching</span>
+<span class="c-cmd">grep</span> <span class="c-flag">-n</span> <span class="c-string">"ERROR"</span> app.log         <span class="c-comment"># show line numbers</span>
+<span class="c-cmd">grep</span> <span class="c-flag">-c</span> <span class="c-string">"ERROR"</span> app.log         <span class="c-comment"># count matching lines</span>
+
+<span class="c-comment"># awk: column-based processing</span>
+<span class="c-cmd">awk</span> <span class="c-string">'{print $1, $3}'</span> file.txt   <span class="c-comment"># print col 1 and 3</span>
+<span class="c-cmd">awk</span> <span class="c-flag">-F:</span> <span class="c-string">'{print $1}'</span> /etc/passwd <span class="c-comment"># use : as delimiter → usernames</span>
+
+<span class="c-comment"># sed: stream editor (find & replace)</span>
+<span class="c-cmd">sed</span> <span class="c-string">'s/old/new/g'</span> file.txt       <span class="c-comment"># replace in output</span>
+<span class="c-cmd">sed</span> <span class="c-flag">-i</span> <span class="c-string">'s/localhost/prod-db/g'</span> config.env  <span class="c-comment"># replace IN FILE</span>
+
+<span class="c-comment"># Practical: count unique IPs in nginx log</span>
+<span class="c-cmd">awk</span> <span class="c-string">'{print $1}'</span> /var/log/nginx/access.log | <span class="c-cmd">sort</span> | <span class="c-cmd">uniq</span> <span class="c-flag">-c</span> | <span class="c-cmd">sort</span> <span class="c-flag">-rn</span> | <span class="c-cmd">head</span> <span class="c-num">10</span></code></pre>
+          </div>
+
+          <div class="callout warning">
+            <div class="callout-icon">⚠️</div>
+            <div class="callout-content">
+              <div class="callout-title">Watch Out</div>
+              <code>sed -i</code> modifies files in-place permanently. Always test without <code>-i</code> first, or use <code>sed -i.bak</code> to create a backup.
+            </div>
+          </div>
+
+          <div class="callout tip">
+            <div class="callout-icon">💀</div>
+            <div class="callout-content">
+              <div class="callout-title">Pro Tips</div>
+              Chain grep: <span class="keyword">grep "ERROR" app.log | grep -v "timeout"</span> — find errors but exclude timeouts. Use <span class="keyword">grep -A 5 "ERROR"</span> to see 5 lines AFTER the match (context!).
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- File viewing -->
+      <div class="topic-block">
+        <div class="topic-header" onclick="toggleTopic(this)">
+          <div class="topic-icon" style="background:rgba(255,217,61,0.1)">👁️</div>
+          <div class="topic-title-wrap">
+            <div class="topic-title">Viewing Files & Logs</div>
+            <div class="topic-subtitle">cat · less · head · tail · tail -f</div>
+          </div>
+          <div class="topic-chevron">▼</div>
+        </div>
+        <div class="topic-body">
+          <h3>💡 Intuition</h3>
+          <p>In production, you need to watch logs in real time. <strong>tail -f</strong> is the single most important command for debugging live systems — it "follows" a log as it grows.</p>
+          <div class="code-block">
+            <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre><code><span class="c-cmd">cat</span> file.txt              <span class="c-comment"># dump entire file</span>
+<span class="c-cmd">less</span> largefile.log        <span class="c-comment"># paginate (q to quit, / to search)</span>
+<span class="c-cmd">head</span> <span class="c-flag">-20</span> file.txt         <span class="c-comment"># first 20 lines</span>
+<span class="c-cmd">tail</span> <span class="c-flag">-50</span> file.txt         <span class="c-comment"># last 50 lines</span>
+<span class="c-cmd">tail</span> <span class="c-flag">-f</span> /var/log/app.log  <span class="c-comment"># LIVE follow — use this for debugging!</span>
+<span class="c-cmd">tail</span> <span class="c-flag">-f</span> app.log | <span class="c-cmd">grep</span> <span class="c-string">"ERROR"</span>  <span class="c-comment"># live-follow + filter</span></code></pre>
+          </div>
+          <div class="callout tip">
+            <div class="callout-icon">💀</div>
+            <div class="callout-content">
+              <div class="callout-title">Pro Tip</div>
+              Never use <span class="keyword">cat</span> on large files — it'll flood your terminal. Use <span class="keyword">less</span> instead. For log monitoring: <span class="keyword">tail -f app.log | grep --line-buffered "ERROR"</span>.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════ LINUX PERMISSIONS ══════════════════════════════ -->
+    <section class="section" id="linux-perms">
+      <div class="section-hero">
+        <div class="section-tag">Linux Fundamentals · 02</div>
+        <div class="section-title">File Permissions</div>
+        <div class="section-desc">Understanding who can read, write, and execute files. This is critical for security and deployments.</div>
+      </div>
+
+      <div class="topic-block open">
+        <div class="topic-header" onclick="toggleTopic(this)">
+          <div class="topic-icon" style="background:rgba(199,125,255,0.1)">🔐</div>
+          <div class="topic-title-wrap">
+            <div class="topic-title">chmod — Symbolic & Numeric</div>
+            <div class="topic-subtitle">rwx · 755 · 644 · owner/group/others</div>
+          </div>
+          <div class="topic-chevron">▼</div>
+        </div>
+        <div class="topic-body">
+          <h3>💡 Intuition</h3>
+          <p>Every file has 3 audiences: the <strong>owner</strong>, the <strong>group</strong>, and <strong>others</strong> (everyone else). Each audience gets 3 permissions: <strong>r</strong>ead, <strong>w</strong>rite, e<strong>x</strong>ecute. Permissions protect your scripts and config files from unauthorized access.</p>
+
+          <h3>⚙️ The Permission Grid</h3>
+          <div class="code-block">
+            <div class="code-header"><span class="code-lang">permission structure</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre><code><span class="c-comment">  -  rwx  r-x  r--</span>
+  |   |    |    |
+  |   |    |    └── Others permissions
+  |   |    └─────── Group permissions
+  |   └──────────── Owner permissions
+  └──────────────── File type (- = file, d = dir, l = symlink)</span>
+
+<span class="c-comment">  r = 4, w = 2, x = 1   → Add them up for numeric mode</span>
+  rwx = 7,  r-x = 5,  r-- = 4,  rw- = 6,  --- = 0</code></pre>
+          </div>
+
+          <h3>💻 chmod Examples</h3>
+          <div class="code-block">
+            <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre><code><span class="c-comment"># Numeric (octal) mode</span>
+<span class="c-cmd">chmod</span> <span class="c-num">755</span> script.sh    <span class="c-comment"># owner=rwx, group=rx, others=rx → typical script</span>
+<span class="c-cmd">chmod</span> <span class="c-num">644</span> config.txt   <span class="c-comment"># owner=rw, group=r, others=r → typical config</span>
+<span class="c-cmd">chmod</span> <span class="c-num">600</span> private.key  <span class="c-comment"># owner=rw, nobody else → SSH keys MUST be this</span>
+<span class="c-cmd">chmod</span> <span class="c-num">700</span> secret.sh    <span class="c-comment"># owner=rwx, nobody else</span>
+
+<span class="c-comment"># Symbolic mode (more readable)</span>
+<span class="c-cmd">chmod</span> +x script.sh      <span class="c-comment"># add execute for all</span>
+<span class="c-cmd">chmod</span> u+x script.sh     <span class="c-comment"># add execute for owner only</span>
+<span class="c-cmd">chmod</span> o-w file.txt      <span class="c-comment"># remove write from others</span>
+<span class="c-cmd">chmod</span> go-rwx secret.key <span class="c-comment"># remove all perms from group and others</span>
+<span class="c-cmd">chmod</span> <span class="c-flag">-R</span> 755 /opt/app/  <span class="c-comment"># recursive: apply to all files in dir</span>
+
+<span class="c-comment"># chown: change ownership</span>
+<span class="c-cmd">chown</span> ubuntu:ubuntu file.txt      <span class="c-comment"># user:group</span>
+<span class="c-cmd">chown</span> <span class="c-flag">-R</span> www-data:www-data /var/www/ <span class="c-comment"># typical nginx setup</span></code></pre>
+          </div>
+
+          <h3>🔢 Quick Reference: Common Permission Numbers</h3>
+          <div class="table-wrap">
+            <table>
+              <tr><th>Number</th><th>Symbolic</th><th class="desc">Use Case</th></tr>
+              <tr><td>777</td><td>rwxrwxrwx</td><td class="desc">⚠️ NEVER use in production — anyone can do anything</td></tr>
+              <tr><td>755</td><td>rwxr-xr-x</td><td class="desc">Shell scripts, executables, directories</td></tr>
+              <tr><td>644</td><td>rw-r--r--</td><td class="desc">Config files, HTML, text files</td></tr>
+              <tr><td>600</td><td>rw-------</td><td class="desc">SSH private keys, secrets</td></tr>
+              <tr><td>400</td><td>r--------</td><td class="desc">Read-only keys (AWS key files)</td></tr>
+              <tr><td>700</td><td>rwx------</td><td class="desc">Private scripts</td></tr>
+            </table>
+          </div>
+
+          <div class="callout danger">
+            <div class="callout-icon">❌</div>
+            <div class="callout-content">
+              <div class="callout-title">Common Mistake — chmod 777</div>
+              Never set 777 in production. This means ANYONE on the system (and sometimes anyone on the internet) can read, write, and execute your files. SSH keys with wrong permissions will be outright rejected by OpenSSH.
+            </div>
+          </div>
+          <div class="callout tip">
+            <div class="callout-icon">💀</div>
+            <div class="callout-content">
+              <div class="callout-title">Pro Tip</div>
+              Use <span class="keyword">stat filename</span> to see permissions in both symbolic and octal form. Use <span class="keyword">ls -la</span> to see symbolic permissions for all files in a directory.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════ LINUX PROCESSES ══════════════════════════════ -->
+    <section class="section" id="linux-proc">
+      <div class="section-hero">
+        <div class="section-tag">Linux Fundamentals · 03</div>
+        <div class="section-title">Processes</div>
+        <div class="section-desc">Managing running programs — how to monitor, control, and kill processes on a server.</div>
+      </div>
+      <div class="topic-block open">
+        <div class="topic-header" onclick="toggleTopic(this)">
+          <div class="topic-icon" style="background:rgba(255,140,66,0.1)">⚙️</div>
+          <div class="topic-title-wrap">
+            <div class="topic-title">ps, top, kill & Background Jobs</div>
+            <div class="topic-subtitle">ps aux · top · htop · kill · &amp; · jobs · nohup</div>
+          </div>
+          <div class="topic-chevron">▼</div>
+        </div>
+        <div class="topic-body">
+          <h3>💡 Intuition</h3>
+          <p>Every program running on Linux is a <strong>process</strong> with a unique <strong>PID</strong> (Process ID). In DevOps, you need to find processes eating CPU/memory, kill stuck processes, and run services in the background without them dying when you log out.</p>
+
+          <div class="code-block">
+            <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre><code><span class="c-comment"># ps: snapshot of running processes</span>
+<span class="c-cmd">ps</span> aux                    <span class="c-comment"># all processes, all users, full detail</span>
+<span class="c-cmd">ps</span> aux | <span class="c-cmd">grep</span> nginx       <span class="c-comment"># find nginx processes</span>
+<span class="c-cmd">ps</span> <span class="c-flag">-ef</span> | <span class="c-cmd">grep</span> python      <span class="c-comment"># another format</span>
+
+<span class="c-comment"># top: live, interactive process viewer</span>
+<span class="c-cmd">top</span>                       <span class="c-comment"># press q to quit, P to sort by CPU, M by memory</span>
+<span class="c-cmd">htop</span>                      <span class="c-comment"># prettier version (install separately)</span>
+
+<span class="c-comment"># kill: send signal to process</span>
+<span class="c-cmd">kill</span> <span class="c-num">1234</span>                  <span class="c-comment"># SIGTERM (15) → polite shutdown, process can clean up</span>
+<span class="c-cmd">kill</span> <span class="c-flag">-9</span> <span class="c-num">1234</span>              <span class="c-comment"># SIGKILL → force kill, NO cleanup possible</span>
+<span class="c-cmd">killall</span> nginx              <span class="c-comment"># kill all processes named nginx</span>
+<span class="c-cmd">pkill</span> <span class="c-flag">-f</span> <span class="c-string">"python app.py"</span>  <span class="c-comment"># kill by matching command string</span>
+
+<span class="c-comment"># Background jobs</span>
+<span class="c-cmd">sleep</span> 60 &amp;                 <span class="c-comment"># run in background, get PID</span>
+<span class="c-cmd">jobs</span>                       <span class="c-comment"># list background jobs in this shell</span>
+<span class="c-cmd">fg</span> %1                      <span class="c-comment"># bring job 1 to foreground</span>
+<span class="c-cmd">bg</span> %1                      <span class="c-comment"># resume job 1 in background</span>
+Ctrl+Z                     <span class="c-comment"># suspend foreground process</span>
+Ctrl+C                     <span class="c-comment"># terminate foreground process</span>
+
+<span class="c-comment"># nohup: keep running after logout</span>
+<span class="c-cmd">nohup</span> python3 server.py &amp;       <span class="c-comment"># runs even after SSH disconnect</span>
+<span class="c-cmd">nohup</span> ./deploy.sh &amp; &gt; deploy.log 2&gt;&amp;1  <span class="c-comment"># capture all output</span></code></pre>
+          </div>
+
+          <div class="callout warning">
+            <div class="callout-icon">⚠️</div>
+            <div class="callout-content">
+              <div class="callout-title">kill -9 vs kill (Signal 15)</div>
+              Always try <code>kill PID</code> first. Only use <code>kill -9</code> if the process won't stop. <code>kill -9</code> doesn't allow the process to save data or clean up — databases can corrupt.
+            </div>
+          </div>
+          <div class="callout tip">
+            <div class="callout-icon">💀</div>
+            <div class="callout-content">
+              <div class="callout-title">Pro Tips</div>
+              To find PID of a process using a port: <span class="keyword">lsof -i :8080</span> or <span class="keyword">ss -tlnp | grep 8080</span>. Use <span class="keyword">pgrep nginx</span> to just get PIDs.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════ REDIRECTION & PIPES ══════════════════════════════ -->
+    <section class="section" id="linux-redir">
+      <div class="section-hero">
+        <div class="section-tag">Linux Fundamentals · 04</div>
+        <div class="section-title">Redirection & Pipes</div>
+        <div class="section-desc">The superpower of Unix — chaining commands together and controlling where output goes.</div>
+      </div>
+      <div class="topic-block open">
+        <div class="topic-header" onclick="toggleTopic(this)">
+          <div class="topic-icon" style="background:rgba(0,212,255,0.1)">🔀</div>
+          <div class="topic-title-wrap">
+            <div class="topic-title">stdin, stdout, stderr & Pipes</div>
+            <div class="topic-subtitle">&gt; · &gt;&gt; · | · 2&gt;&amp;1 · /dev/null · tee</div>
+          </div>
+          <div class="topic-chevron">▼</div>
+        </div>
+        <div class="topic-body">
+          <h3>💡 Intuition</h3>
+          <p>Every command has 3 streams: <strong>stdin</strong> (input, fd=0), <strong>stdout</strong> (output, fd=1), <strong>stderr</strong> (errors, fd=2). You can redirect any stream to a file or to another command. The <strong>pipe</strong> (<code>|</code>) connects stdout of one command to stdin of the next — this is how you build powerful one-liners.</p>
+
+          <div class="code-block">
+            <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre><code><span class="c-comment"># OUTPUT REDIRECTION</span>
+<span class="c-cmd">echo</span> <span class="c-string">"hello"</span> &gt; file.txt     <span class="c-comment"># write (overwrites!)</span>
+<span class="c-cmd">echo</span> <span class="c-string">"hello"</span> &gt;&gt; file.txt    <span class="c-comment"># append (safe)</span>
+
+<span class="c-comment"># ERROR REDIRECTION</span>
+<span class="c-cmd">ls</span> /nonexistent 2&gt; err.txt   <span class="c-comment"># redirect stderr to file</span>
+<span class="c-cmd">ls</span> /nonexistent 2&gt;&amp;1         <span class="c-comment"># merge stderr into stdout</span>
+
+<span class="c-comment"># CAPTURE BOTH stdout and stderr</span>
+<span class="c-cmd">./deploy.sh</span> &gt; output.log 2&gt;&amp;1   <span class="c-comment"># everything to one file</span>
+
+<span class="c-comment"># SUPPRESS errors</span>
+<span class="c-cmd">find</span> / <span class="c-flag">-name</span> <span class="c-string">"secret"</span> 2&gt;/dev/null  <span class="c-comment"># silence permission denied</span>
+
+<span class="c-comment"># PIPES</span>
+<span class="c-cmd">ps</span> aux | <span class="c-cmd">grep</span> python | <span class="c-cmd">awk</span> <span class="c-string">'{print $2}'</span>   <span class="c-comment"># PIDs of python processes</span>
+<span class="c-cmd">cat</span> /etc/passwd | <span class="c-cmd">cut</span> <span class="c-flag">-d:</span> <span class="c-flag">-f1</span> | <span class="c-cmd">sort</span>       <span class="c-comment"># sorted usernames</span>
+
+<span class="c-comment"># tee: write to file AND stdout simultaneously</span>
+<span class="c-cmd">./build.sh</span> | <span class="c-cmd">tee</span> build.log      <span class="c-comment"># see output AND save to file</span>
+
+<span class="c-comment"># xargs: convert stdin to command arguments</span>
+<span class="c-cmd">cat</span> servers.txt | <span class="c-cmd">xargs</span> ping <span class="c-flag">-c1</span>  <span class="c-comment"># ping each server in the file</span>
+<span class="c-cmd">find</span> . <span class="c-flag">-name</span> <span class="c-string">"*.log"</span> | <span class="c-cmd">xargs</span> rm   <span class="c-comment"># delete all found logs</span></code></pre>
+          </div>
+          <div class="callout danger">
+            <div class="callout-icon">❌</div>
+            <div class="callout-content">
+              <div class="callout-title">Common Mistake — Order Matters for 2&gt;&amp;1</div>
+              <code>./script.sh 2&gt;&amp;1 &gt; out.log</code> is WRONG. Stderr won't go to the file.
+              Correct: <code>./script.sh &gt; out.log 2&gt;&amp;1</code> — redirect stdout first, then merge stderr into it.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════ FULL COMMAND REFERENCE ══════════════════════════════ -->
+    <section class="section" id="linux-cmdref">
+      <div class="section-hero">
+        <div class="section-tag">Linux Fundamentals · Reference</div>
+        <div class="section-title">Full Command Reference</div>
+        <div class="section-desc">Every important Linux command in one place — with purpose, syntax, and notes. Bookmark this page.</div>
+      </div>
+
+      <div class="topic-block open">
+        <div class="topic-header" onclick="toggleTopic(this)">
+          <div class="topic-icon" style="background:rgba(0,212,255,0.1)">🗂️</div>
+          <div class="topic-title-wrap">
+            <div class="topic-title">Navigation & System Info</div>
+            <div class="topic-subtitle">ls · pwd · cd · uname · whoami · uptime · date</div>
+          </div>
+          <div class="topic-chevron">▼</div>
+        </div>
+        <div class="topic-body">
+          <div class="table-wrap">
+            <table>
+              <tr><th>Command</th><th>Full Form / Syntax</th><th class="desc">What it Does</th></tr>
+              <tr><td>ls</td><td>ls -lah /path</td><td class="desc">List files and folders in current/given folder. <code>-l</code>=long, <code>-a</code>=hidden, <code>-h</code>=human sizes</td></tr>
+              <tr><td>pwd</td><td>pwd</td><td class="desc">Print Working Directory — shows where you are right now</td></tr>
+              <tr><td>cd</td><td>cd /var/log</td><td class="desc">Change Directory. <code>cd ~</code>=home, <code>cd -</code>=previous dir, <code>cd ..</code>=go up one level</td></tr>
+              <tr><td>clear</td><td>clear</td><td class="desc">Clean/clear the terminal screen of recently used commands</td></tr>
+              <tr><td>uname</td><td>uname -a</td><td class="desc">Shows OS/kernel info. <code>-a</code>=all, shows distributor name, kernel version, architecture</td></tr>
+              <tr><td>whoami</td><td>whoami</td><td class="desc">Shows the current logged-in user's username</td></tr>
+              <tr><td>who</td><td>who</td><td class="desc">Shows all users currently logged into the system (last visited)</td></tr>
+              <tr><td>id</td><td>id username</td><td class="desc">Shows user's UID (User ID), GID (Group ID), and group memberships</td></tr>
+              <tr><td>uptime</td><td>uptime</td><td class="desc">Shows how long the system has been running, load averages</td></tr>
+              <tr><td>date</td><td>date +%Y-%m-%d</td><td class="desc">Shows current day, date, and time (UTC format by default)</td></tr>
+              <tr><td>time</td><td>time command</td><td class="desc">Measures how long a command takes — shows real, user, and system time</td></tr>
+              <tr><td>vmstat</td><td>vmstat 1 5</td><td class="desc">Shows memory used/free, CPU stats, disk I/O. Number=interval, 5=count</td></tr>
+              <tr><td>which</td><td>which nginx</td><td class="desc">Shows the full path of an installed software/command</td></tr>
+              <tr><td>sudo</td><td>sudo command</td><td class="desc">Super User Do — run command as root. SUDO = Super User DO</td></tr>
+              <tr><td>tree</td><td>tree /path</td><td class="desc">Shows directory structure as a visual tree (install: apt install tree)</td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="topic-block">
+        <div class="topic-header" onclick="toggleTopic(this)">
+          <div class="topic-icon" style="background:rgba(0,255,157,0.1)">📁</div>
+          <div class="topic-title-wrap">
+            <div class="topic-title">File & Directory Operations</div>
+            <div class="topic-subtitle">cat · touch · mkdir · cp · mv · rm · rmdir</div>
+          </div>
+          <div class="topic-chevron">▼</div>
+        </div>
+        <div class="topic-body">
+          <div class="table-wrap">
+            <table>
+              <tr><th>Command</th><th>Syntax</th><th class="desc">What it Does</th></tr>
+              <tr><td>cat</td><td>cat filename</td><td class="desc">Shows (concatenates) content of a specific file to terminal</td></tr>
+              <tr><td>touch</td><td>touch file.txt</td><td class="desc">Creates an empty file (or updates timestamp if exists)</td></tr>
+              <tr><td>mkdir</td><td>mkdir -p dir/sub</td><td class="desc">Creates a folder/directory. <code>-p</code> creates parent dirs if missing</td></tr>
+              <tr><td>cp</td><td>cp -r src/ dst/</td><td class="desc">Make a copy at the specific location. <code>-r</code> for directories</td></tr>
+              <tr><td>mv</td><td>mv old new</td><td class="desc">Move the file from one path to another — also used to rename</td></tr>
+              <tr><td>rm</td><td>rm file.txt</td><td class="desc">Remove (delete) a file permanently</td></tr>
+              <tr><td>rm -rf</td><td>rm -rf dir/</td><td class="desc">Remove folder forcefully — <code>-r</code>=recursive, <code>-f</code>=force (no prompt). ⚠️ Dangerous!</td></tr>
+              <tr><td>rmdir</td><td>rmdir emptydir</td><td class="desc">Removes an EMPTY directory only. Fails if directory has files</td></tr>
+              <tr><td>less</td><td>less file.txt</td><td class="desc">View large files page by page. Press <code>q</code> to quit, <code>/</code> to search</td></tr>
+              <tr><td>head</td><td>head -20 file</td><td class="desc">Shows first N lines of a file (default 10)</td></tr>
+              <tr><td>tail</td><td>tail -f file</td><td class="desc">Shows last N lines. <code>-f</code>=follow live (essential for log monitoring)</td></tr>
+              <tr><td>grep</td><td>grep "pattern" file</td><td class="desc">Search for text pattern inside files. Most used text search tool</td></tr>
+              <tr><td>sort</td><td>sort file.txt</td><td class="desc">Sort lines alphabetically. <code>-r</code>=reverse, <code>-n</code>=numeric, <code>-k2</code>=by column 2</td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="topic-block">
+        <div class="topic-header" onclick="toggleTopic(this)">
+          <div class="topic-icon" style="background:rgba(255,217,61,0.1)">👥</div>
+          <div class="topic-title-wrap">
+            <div class="topic-title">User & Group Management</div>
+            <div class="topic-subtitle">useradd · passwd · su · userdel · groupadd · groupdel</div>
+          </div>
+          <div class="topic-chevron">▼</div>
+        </div>
+        <div class="topic-body">
+          <div class="table-wrap">
+            <table>
+              <tr><th>Command</th><th>Syntax</th><th class="desc">What it Does</th></tr>
+              <tr><td>useradd</td><td>useradd john</td><td class="desc">Create a new user (basic — no home directory)</td></tr>
+              <tr><td>useradd -m</td><td>useradd -m john</td><td class="desc">Create user WITH a home directory at /home/john</td></tr>
+              <tr><td>passwd</td><td>passwd john</td><td class="desc">Set or change password for a user</td></tr>
+              <tr><td>su</td><td>su john</td><td class="desc">Switch User — switch to another user account</td></tr>
+              <tr><td>exit</td><td>exit</td><td class="desc">Exit current user session / switch back to primary user</td></tr>
+              <tr><td>userdel</td><td>userdel john</td><td class="desc">Delete a user from the system</td></tr>
+              <tr><td>groupadd</td><td>groupadd devs</td><td class="desc">Create a new group</td></tr>
+              <tr><td>groupdel</td><td>groupdel devs</td><td class="desc">Delete a group</td></tr>
+              <tr><td>cat /etc/passwd</td><td>cat /etc/passwd</td><td class="desc">Shows the list of all users on the system</td></tr>
+              <tr><td>cat /etc/group</td><td>cat /etc/group</td><td class="desc">Shows the list of all groups on the system</td></tr>
+            </table>
+          </div>
+          <div class="callout tip">
+            <div class="callout-icon">💀</div>
+            <div class="callout-content">
+              <div class="callout-title">Pro Tip — User vs Group</div>
+              A <strong>User</strong> is an individual identity on the system. A <strong>Group</strong> is a collection of users. File permissions apply to: owner (user), group, and others. Use groups to grant shared access to files without giving root.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="topic-block">
+        <div class="topic-header" onclick="toggleTopic(this)">
+          <div class="topic-icon" style="background:rgba(199,125,255,0.1)">🔐</div>
+          <div class="topic-title-wrap">
+            <div class="topic-title">Permissions & Ownership</div>
+            <div class="topic-subtitle">chmod · chown · chgrp · umask · wrx</div>
+          </div>
+          <div class="topic-chevron">▼</div>
+        </div>
+        <div class="topic-body">
+          <div class="callout info">
+            <div class="callout-icon">📖</div>
+            <div class="callout-content">
+              <div class="callout-title">wrx — The 3 Core Permissions</div>
+              <strong>w</strong> = Write (modify the file) &nbsp;|&nbsp; <strong>r</strong> = Read (view the file) &nbsp;|&nbsp; <strong>x</strong> = Execute (run as a program)
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <tr><th>Command</th><th>Syntax</th><th class="desc">What it Does</th></tr>
+              <tr><td>chmod</td><td>chmod 755 file</td><td class="desc">Change file permissions (numeric or symbolic). See Permissions section for full details.</td></tr>
+              <tr><td>chown</td><td>chown user:group file</td><td class="desc">Change the ownership of a file/folder to target user and group</td></tr>
+              <tr><td>chgrp</td><td>chgrp devs file</td><td class="desc">Change the GROUP ownership of a file/folder</td></tr>
+              <tr><td>umask</td><td>umask</td><td class="desc">Shows/sets the default permissions number for newly created files</td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="topic-block">
+        <div class="topic-header" onclick="toggleTopic(this)">
+          <div class="topic-icon" style="background:rgba(255,140,66,0.1)">📦</div>
+          <div class="topic-title-wrap">
+            <div class="topic-title">Package Management & Downloads</div>
+            <div class="topic-subtitle">apt · apt-get · dpkg · wget · yum · wsl</div>
+          </div>
+          <div class="topic-chevron">▼</div>
+        </div>
+        <div class="topic-body">
+          <div class="table-wrap">
+            <table>
+              <tr><th>Command</th><th>Syntax</th><th class="desc">What it Does</th></tr>
+              <tr><td>apt install</td><td>apt install nginx</td><td class="desc">Install packages from system repos (modern, recommended)</td></tr>
+              <tr><td>apt-get install</td><td>apt-get install pkg</td><td class="desc">Download and install packages from internet (older, still widely used)</td></tr>
+              <tr><td>apt remove</td><td>apt remove nginx</td><td class="desc">Uninstall/remove a package from the system</td></tr>
+              <tr><td>dpkg -l</td><td>dpkg -l pkg_name</td><td class="desc">List installed Debian packages — check if specific package is installed</td></tr>
+              <tr><td>wget</td><td>wget https://url/file</td><td class="desc">Download files from internet. Simple, no progress interaction needed</td></tr>
+              <tr><td>yum</td><td>yum install pkg</td><td class="desc">Package manager for RHEL/CentOS/Fedora systems (like apt for Red Hat)</td></tr>
+              <tr><td>wsl</td><td>wsl --install</td><td class="desc">Windows Subsystem for Linux — run Linux inside Windows</td></tr>
+              <tr><td>ssh</td><td>ssh user@host</td><td class="desc">Secure Shell — encrypted remote login to another Linux machine</td></tr>
+            </table>
+          </div>
+          <div class="callout info">
+            <div class="callout-icon">💡</div>
+            <div class="callout-content">
+              <div class="callout-title">apt vs apt-get</div>
+              <strong>apt</strong> is the newer, user-friendly version. <strong>apt-get</strong> is the older backend tool — more scriptable and stable for automation. Both work; use <strong>apt</strong> for interactive use, <strong>apt-get</strong> in scripts.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="topic-block">
+        <div class="topic-header" onclick="toggleTopic(this)">
+          <div class="topic-icon" style="background:rgba(79,156,249,0.12)">🗜️</div>
+          <div class="topic-title-wrap">
+            <div class="topic-title">Compression & Archives</div>
+            <div class="topic-subtitle">tar · gz · zip · unzip</div>
+          </div>
+          <div class="topic-chevron">▼</div>
+        </div>
+        <div class="topic-body">
+          <div class="callout info">
+            <div class="callout-icon">📖</div>
+            <div class="callout-content">
+              <div class="callout-title">tar vs gz — what's the difference?</div>
+              <strong>tar</strong> = bundles multiple files into ONE file (like a folder in a box). It does NOT compress by default. <strong>gz</strong> (gzip) = compresses a file to make it smaller. <strong>tar.gz</strong> = bundled AND compressed. That's why it's the most common archive format on Linux.
+            </div>
+          </div>
+          <div class="code-block">
+            <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre><code><span class="c-comment"># tar: bundle files</span>
+<span class="c-cmd">tar</span> <span class="c-flag">-cvf</span> archive.tar folder/       <span class="c-comment"># c=create, v=verbose, f=filename</span>
+<span class="c-cmd">tar</span> <span class="c-flag">-czvf</span> archive.tar.gz folder/   <span class="c-comment"># z=compress with gzip</span>
+<span class="c-cmd">tar</span> <span class="c-flag">-xzvf</span> archive.tar.gz          <span class="c-comment"># x=extract</span>
+<span class="c-cmd">tar</span> <span class="c-flag">-tf</span> archive.tar.gz             <span class="c-comment"># list contents without extracting</span>
+
+<span class="c-comment"># zip/unzip: simpler, cross-platform</span>
+<span class="c-cmd">zip</span> output.zip file.txt           <span class="c-comment"># compress single file</span>
+<span class="c-cmd">zip</span> <span class="c-flag">-r</span> output.zip folder/         <span class="c-comment"># compress a folder (-r = recursive)</span>
+<span class="c-cmd">unzip</span> output.zip                  <span class="c-comment"># decompress/extract</span>
+<span class="c-cmd">unzip</span> <span class="c-flag">-l</span> output.zip               <span class="c-comment"># list contents</span></code></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="topic-block">
+        <div class="topic-header" onclick="toggleTopic(this)">
+          <div class="topic-icon" style="background:rgba(0,255,157,0.1)">🌐</div>
+          <div class="topic-title-wrap">
+            <div class="topic-title">Networking Commands</div>
+            <div class="topic-subtitle">netstat · nslookup · mtr · ping · ss · lsof</div>
+          </div>
+          <div class="topic-chevron">▼</div>
+        </div>
+        <div class="topic-body">
+          <div class="table-wrap">
+            <table>
+              <tr><th>Command</th><th>Syntax</th><th class="desc">What it Does</th></tr>
+              <tr><td>ping</td><td>ping -c4 host</td><td class="desc">Test if a host is reachable. Sends ICMP packets, shows response time</td></tr>
+              <tr><td>netstat</td><td>netstat -tlnp</td><td class="desc">Show network connections, routing tables, ports in use (older tool)</td></tr>
+              <tr><td>ss</td><td>ss -tlnp</td><td class="desc">Modern replacement for netstat. Shows sockets/ports + which process uses them</td></tr>
+              <tr><td>lsof</td><td>lsof -i :8080</td><td class="desc">List open files — <code>-i :port</code> shows what's using a specific port</td></tr>
+              <tr><td>nslookup</td><td>nslookup domain.com</td><td class="desc">DNS lookup — find IP address of a domain name</td></tr>
+              <tr><td>mtr</td><td>mtr google.com</td><td class="desc">My TraceRoute — combines ping + traceroute. Live network path diagnostics</td></tr>
+              <tr><td>ssh</td><td>ssh user@ip</td><td class="desc">Secure Shell — encrypted terminal connection to remote Linux servers</td></tr>
+            </table>
+          </div>
+          <div class="callout info">
+            <div class="callout-icon">📖</div>
+            <div class="callout-content">
+              <div class="callout-title">NAS — Network Attached Storage</div>
+              NAS is a storage device connected to a network that allows multiple users/devices to access data centrally — like a shared drive on your office network. Different from local disk; data stored on NAS is accessible over the network.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="topic-block">
+        <div class="topic-header" onclick="toggleTopic(this)">
+          <div class="topic-icon" style="background:rgba(255,77,109,0.1)">💡</div>
+          <div class="topic-title-wrap">
+            <div class="topic-title">Miscellaneous & Shutdown</div>
+            <div class="topic-subtitle">shutdown · reboot · dpkg · hidden files</div>
+          </div>
+          <div class="topic-chevron">▼</div>
+        </div>
+        <div class="topic-body">
+          <div class="table-wrap">
+            <table>
+              <tr><th>Command</th><th>Syntax</th><th class="desc">What it Does</th></tr>
+              <tr><td>shutdown</td><td>shutdown now</td><td class="desc">Power off the system. Default schedules 2 min delay. <code>now</code> = immediate</td></tr>
+              <tr><td>reboot</td><td>reboot</td><td class="desc">Restart the system/shell</td></tr>
+            </table>
+          </div>
+          <div class="callout info">
+            <div class="callout-icon">📖</div>
+            <div class="callout-content">
+              <div class="callout-title">Hidden Files & Folders</div>
+              In Linux, any file or folder whose name starts with a <strong>dot (.)</strong> is hidden. For example: <code>.env</code>, <code>.git/</code>, <code>.bashrc</code>. Hidden files won't show in regular <code>ls</code> — use <code>ls -a</code> or <code>ls -la</code> to see them.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════ SOFT & HARD LINKS ══════════════════════════════ -->
+    <section class="section" id="linux-links">
+      <div class="section-hero">
+        <div class="section-tag">Linux Fundamentals · Links</div>
+        <div class="section-title">Soft Links & Hard Links</div>
+        <div class="section-desc">Two ways to create "shortcuts" to files in Linux — understanding the difference is a classic interview question.</div>
+      </div>
+
+      <div class="topic-block open">
+        <div class="topic-header" onclick="toggleTopic(this)">
+          <div class="topic-icon" style="background:rgba(0,212,255,0.1)">🔗</div>
+          <div class="topic-title-wrap">
+            <div class="topic-title">Soft Link vs Hard Link — Side by Side</div>
+            <div class="topic-subtitle">ln -s · ln · inode · symlink</div>
+          </div>
+          <div class="topic-chevron">▼</div>
+        </div>
+        <div class="topic-body">
+          <h3>💡 Intuition</h3>
+          <p>Think of a file like a house. The actual data (house) lives at an <strong>inode</strong> (address on disk). A <strong>hard link</strong> is another door to the SAME house — the house exists as long as ANY door exists. A <strong>soft link</strong> is a signpost pointing to the house's address — if the house is demolished, the signpost still exists but leads nowhere.</p>
+
+          <div class="table-wrap">
+            <table>
+              <tr><th>Feature</th><th>Soft Link (Symbolic)</th><th>Hard Link</th></tr>
+              <tr><td>Command</td><td><code>ln -s source link</code></td><td><code>ln source link</code></td></tr>
+              <tr><td>Points to</td><td>Path (file name)</td><td>Inode (actual data)</td></tr>
+              <tr><td>Source deleted?</td><td>Link BREAKS (dangling)</td><td>Data still accessible</td></tr>
+              <tr><td>Cross filesystem?</td><td>✅ Yes</td><td>❌ No</td></tr>
+              <tr><td>Works on dirs?</td><td>✅ Yes</td><td>❌ No (mostly)</td></tr>
+              <tr><td>Shows as</td><td>lrwxrwxrwx (l prefix in ls)</td><td>Same as regular file</td></tr>
+              <tr><td>Use case</td><td>Shortcuts, versioned deploys</td><td>Backups, inode-level duplicates</td></tr>
+            </table>
+          </div>
+
+          <div class="code-block">
+            <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre><code><span class="c-comment"># SOFT LINK (Symbolic Link)</span>
+<span class="c-comment"># Source file affected = soft link breaks if source is deleted</span>
+<span class="c-cmd">ln</span> <span class="c-flag">-s</span> /opt/app-v2.3/ /opt/current   <span class="c-comment"># create symlink</span>
+<span class="c-cmd">ls</span> <span class="c-flag">-la</span> /opt/current                   <span class="c-comment"># shows: current -> /opt/app-v2.3/</span>
+
+<span class="c-comment"># Real DevOps use: switch versions with one command</span>
+<span class="c-cmd">ln</span> <span class="c-flag">-sfn</span> /opt/app-v2.4/ /opt/current  <span class="c-comment"># atomic version switch!</span>
+
+<span class="c-comment"># HARD LINK</span>
+<span class="c-comment"># Duplicate file that isn't affected by source file deletion</span>
+<span class="c-cmd">ln</span> /original/file.txt /backup/file.txt
+<span class="c-comment"># Now both point to the same data (same inode)</span>
+<span class="c-comment"># Deleting /original/file.txt = data still in /backup/file.txt</span>
+
+<span class="c-comment"># Check inode numbers (same inode = hard link)</span>
+<span class="c-cmd">ls</span> <span class="c-flag">-i</span> /original/file.txt /backup/file.txt</code></pre>
+          </div>
+
+          <div class="callout tip">
+            <div class="callout-icon">💀</div>
+            <div class="callout-content">
+              <div class="callout-title">Pro Tip — Real DevOps Use of Soft Links</div>
+              The zero-downtime deploy technique uses symlinks: keep <code>/opt/current</code> as a symlink to the active version. To deploy, extract new code to <code>/opt/v2.4/</code>, then run <code>ln -sfn /opt/v2.4 /opt/current</code> — the switch is atomic (instant). This is how many production deployments work.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════ SHELL: VARIABLES ══════════════════════════════ -->
+    <section class="section" id="sh-vars">
+      <div class="section-hero">
+        <div class="section-tag">Shell Scripting · 01</div>
+        <div class="section-title">Variables & Input</div>
+        <div class="section-desc">The foundation of any shell script — storing data, reading user input, and using special variables.</div>
+      </div>
+      <div class="topic-block open">
+        <div class="topic-header" onclick="toggleTopic(this)">
+          <div class="topic-icon" style="background:rgba(255,217,61,0.1)">📦</div>
+          <div class="topic-title-wrap">
+            <div class="topic-title">Variables, Special Variables & Input</div>
+            <div class="topic-subtitle">$VAR · $# · $@ · $? · $0 · read · export</div>
+          </div>
+          <div class="topic-chevron">▼</div>
+        </div>
+        <div class="topic-body">
+          <h3>💡 Intuition</h3>
+          <p>Shell variables are like sticky notes. You write something down (<code>NAME="Alice"</code>), and later you can read it back (<code>echo $NAME</code>). No spaces around <code>=</code> — ever. That's the #1 beginner mistake.</p>
+
+          <div class="code-block">
+            <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre><code><span class="c-comment">#!/bin/bash
+# VARIABLES</span>
+<span class="c-var">NAME</span>=<span class="c-string">"Alice"</span>                    <span class="c-comment"># no spaces around =</span>
+<span class="c-var">AGE</span>=<span class="c-num">25</span>
+<span class="c-cmd">echo</span> <span class="c-string">"Hello, $NAME. You are $AGE."</span>
+<span class="c-cmd">echo</span> <span class="c-string">"Hello, ${NAME}!"</span>            <span class="c-comment"># braces for clarity</span>
+
+<span class="c-comment"># READ INPUT</span>
+<span class="c-cmd">read</span> <span class="c-flag">-p</span> <span class="c-string">"Enter your name: "</span> username
+<span class="c-cmd">echo</span> <span class="c-string">"Welcome, $username"</span>
+<span class="c-cmd">read</span> <span class="c-flag">-s</span> <span class="c-flag">-p</span> <span class="c-string">"Password: "</span> pass      <span class="c-comment"># -s = silent (no echo)</span>
+
+<span class="c-comment"># COMMAND OUTPUT as variable</span>
+<span class="c-var">TODAY</span>=$(date +%Y-%m-%d)          <span class="c-comment"># preferred syntax</span>
+<span class="c-var">FILES</span>=$(ls /var/log/*.log | wc <span class="c-flag">-l</span>)
+<span class="c-cmd">echo</span> <span class="c-string">"Today: $TODAY, Logs: $FILES"</span>
+
+<span class="c-comment"># SPECIAL VARIABLES</span>
+<span class="c-cmd">echo</span> <span class="c-string">"Script name: $0"</span>
+<span class="c-cmd">echo</span> <span class="c-string">"First arg: $1"</span>
+<span class="c-cmd">echo</span> <span class="c-string">"All args: $@"</span>
+<span class="c-cmd">echo</span> <span class="c-string">"Arg count: $#"</span>
+<span class="c-cmd">echo</span> <span class="c-string">"Last exit code: $?"</span>
+<span class="c-cmd">echo</span> <span class="c-string">"Current PID: $$"</span>
+
+<span class="c-comment"># EXPORT: make available to child processes</span>
+<span class="c-cmd">export</span> <span class="c-var">DB_HOST</span>=<span class="c-string">"prod-db.internal"</span>
+
+<span class="c-comment"># DEFAULT VALUES</span>
+<span class="c-var">ENV</span>=<span class="c-string">${1:-"production"}</span>           <span class="c-comment"># use $1 or "production" if not set</span>
+<span class="c-var">LOG</span>=<span class="c-string">${LOG_FILE:-"/var/log/app.log"}</span></code></pre>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <tr><th>Variable</th><th class="desc">Meaning</th></tr>
+              <tr><td>$0</td><td class="desc">Script name</td></tr>
+              <tr><td>$1, $2...</td><td class="desc">Positional arguments</td></tr>
+              <tr><td>$@</td><td class="desc">All arguments as separate words</td></tr>
+              <tr><td>$#</td><td class="desc">Number of arguments</td></tr>
+              <tr><td>$?</td><td class="desc">Exit code of last command (0=success)</td></tr>
+              <tr><td>$$</td><td class="desc">PID of current script</td></tr>
+              <tr><td>$!</td><td class="desc">PID of last background process</td></tr>
+            </table>
+          </div>
+
+          <div class="callout danger">
+            <div class="callout-icon">❌</div>
+            <div class="callout-content">
+              <div class="callout-title">Common Mistakes</div>
+              <code>NAME = "Alice"</code> → WRONG (spaces around =). <code>NAME=Alice Smith</code> → WRONG (no quotes around value with spaces). Always quote values that might have spaces: <code>NAME="Alice Smith"</code>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════ SHELL: CONDITIONS ══════════════════════════════ -->
+    <section class="section" id="sh-cond">
+      <div class="section-hero">
+        <div class="section-tag">Shell Scripting · 02</div>
+        <div class="section-title">Conditions — if & case</div>
+        <div class="section-desc">Make your scripts smart — branch based on values, file existence, or command success.</div>
+      </div>
+      <div class="topic-block open">
+        <div class="topic-header" onclick="toggleTopic(this)">
+          <div class="topic-icon" style="background:rgba(0,255,157,0.1)">🌿</div>
+          <div class="topic-title-wrap">
+            <div class="topic-title">if / elif / else + case</div>
+            <div class="topic-subtitle">[ ] · [[ ]] · -f · -d · -z · -eq · -gt</div>
+          </div>
+          <div class="topic-chevron">▼</div>
+        </div>
+        <div class="topic-body">
+          <h3>💡 Intuition</h3>
+          <p>In shell, <code>if</code> doesn't check "true/false" — it checks if a command <strong>succeeds (exit 0)</strong>. The <code>[</code> and <code>[[</code> are actually commands that return 0 or 1. This trips up everyone at first.</p>
+          <div class="code-block">
+            <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre><code><span class="c-comment">#!/bin/bash
+
+# BASIC if</span>
+<span class="c-keyword">if</span> [[ <span class="c-var">$1</span> == <span class="c-string">"prod"</span> ]]; <span class="c-keyword">then</span>
+    <span class="c-cmd">echo</span> <span class="c-string">"Deploying to production!"</span>
+<span class="c-keyword">elif</span> [[ <span class="c-var">$1</span> == <span class="c-string">"staging"</span> ]]; <span class="c-keyword">then</span>
+    <span class="c-cmd">echo</span> <span class="c-string">"Deploying to staging"</span>
+<span class="c-keyword">else</span>
+    <span class="c-cmd">echo</span> <span class="c-string">"Unknown environment"</span>
+    <span class="c-cmd">exit</span> <span class="c-num">1</span>
+<span class="c-keyword">fi</span>
+
+<span class="c-comment"># FILE/DIR TESTS</span>
+<span class="c-keyword">if</span> [[ <span class="c-flag">-f</span> <span class="c-string">"/etc/nginx/nginx.conf"</span> ]]; <span class="c-keyword">then</span>
+    <span class="c-cmd">echo</span> <span class="c-string">"Config exists"</span>
+<span class="c-keyword">fi</span>
+<span class="c-keyword">if</span> [[ <span class="c-flag">-d</span> <span class="c-string">"/opt/app"</span> ]]; <span class="c-keyword">then</span> <span class="c-cmd">echo</span> <span class="c-string">"Dir exists"</span>; <span class="c-keyword">fi</span>
+<span class="c-keyword">if</span> [[ ! <span class="c-flag">-f</span> <span class="c-string">".env"</span> ]]; <span class="c-keyword">then</span>
+    <span class="c-cmd">echo</span> <span class="c-string">"ERROR: .env missing"</span>; <span class="c-cmd">exit</span> <span class="c-num">1</span>
+<span class="c-keyword">fi</span>
+
+<span class="c-comment"># NUMBER COMPARISONS</span>
+<span class="c-var">COUNT</span>=<span class="c-num">5</span>
+<span class="c-keyword">if</span> [[ <span class="c-var">$COUNT</span> <span class="c-flag">-gt</span> <span class="c-num">3</span> ]]; <span class="c-keyword">then</span> <span class="c-cmd">echo</span> <span class="c-string">"High count"</span>; <span class="c-keyword">fi</span>
+
+<span class="c-comment"># STRING CHECKS</span>
+<span class="c-keyword">if</span> [[ <span class="c-flag">-z</span> <span class="c-string">"$VAR"</span> ]]; <span class="c-keyword">then</span>   <span class="c-comment"># -z = empty string</span>
+    <span class="c-cmd">echo</span> <span class="c-string">"VAR is empty!"</span>; <span class="c-cmd">exit</span> <span class="c-num">1</span>
+<span class="c-keyword">fi</span>
+<span class="c-keyword">if</span> [[ <span class="c-flag">-n</span> <span class="c-string">"$VAR"</span> ]]; <span class="c-keyword">then</span>   <span class="c-comment"># -n = non-empty</span>
+    <span class="c-cmd">echo</span> <span class="c-string">"VAR is set"</span>
+<span class="c-keyword">fi</span>
+
+<span class="c-comment"># CASE statement (cleaner than many elif)</span>
+<span class="c-keyword">case</span> <span class="c-string">"$ENV"</span> <span class="c-keyword">in</span>
+    prod|production)
+        <span class="c-var">SERVER</span>=<span class="c-string">"prod.example.com"</span>;;
+    staging)
+        <span class="c-var">SERVER</span>=<span class="c-string">"staging.example.com"</span>;;
+    dev*)                        <span class="c-comment"># wildcard match</span>
+        <span class="c-var">SERVER</span>=<span class="c-string">"localhost"</span>;;
+    *)
+        <span class="c-cmd">echo</span> <span class="c-string">"Unknown env"; exit 1</span>;;
+<span class="c-keyword">esac</span></code></pre>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <tr><th>Test Flag</th><th class="desc">Meaning</th></tr>
+              <tr><td>-f FILE</td><td class="desc">File exists and is a regular file</td></tr>
+              <tr><td>-d DIR</td><td class="desc">Directory exists</td></tr>
+              <tr><td>-z "$VAR"</td><td class="desc">String is empty</td></tr>
+              <tr><td>-n "$VAR"</td><td class="desc">String is NOT empty</td></tr>
+              <tr><td>-eq, -ne</td><td class="desc">Number equal, not equal</td></tr>
+              <tr><td>-gt, -lt</td><td class="desc">Greater than, less than</td></tr>
+              <tr><td>-ge, -le</td><td class="desc">Greater/less than or equal</td></tr>
+            </table>
+          </div>
+
+          <h3>🔢 Number Operators vs String Operators — The Key Distinction</h3>
+          <div class="callout warning">
+            <div class="callout-icon">⚠️</div>
+            <div class="callout-content">
+              <div class="callout-title">Most Common Interview Trap in Scripting</div>
+              Number comparison and string comparison use DIFFERENT operators. Using == for numbers or -eq for strings produces wrong results or errors. Know both sets cold.
+            </div>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <tr><th colspan="2" style="text-align:center;color:var(--accent-cyan)">🔢 Only for NUMBERS — Numeric Comparison</th></tr>
+              <tr><th>Operator</th><th class="desc">Meaning</th></tr>
+              <tr><td>-eq</td><td class="desc">equal &nbsp;&nbsp;&nbsp; → <code>[[ $a -eq $b ]]</code></td></tr>
+              <tr><td>-ne</td><td class="desc">not equal → <code>[[ $a -ne $b ]]</code></td></tr>
+              <tr><td>-gt</td><td class="desc">greater than → <code>[[ $a -gt $b ]]</code></td></tr>
+              <tr><td>-lt</td><td class="desc">less than → <code>[[ $a -lt $b ]]</code></td></tr>
+              <tr><td>-ge</td><td class="desc">greater than or equal → <code>[[ $a -ge $b ]]</code></td></tr>
+              <tr><td>-le</td><td class="desc">less than or equal → <code>[[ $a -le $b ]]</code></td></tr>
+              <tr><th colspan="2" style="text-align:center;color:var(--accent-green);padding-top:12px">🔤 Only for STRINGS — String Comparison</th></tr>
+              <tr><th>Operator</th><th class="desc">Meaning</th></tr>
+              <tr><td>==</td><td class="desc">equal (strings match) → <code>[[ "$a" == "$b" ]]</code></td></tr>
+              <tr><td>!=</td><td class="desc">not equal → <code>[[ "$a" != "$b" ]]</code></td></tr>
+              <tr><td>&lt;</td><td class="desc">alphabetically before → <code>[[ "$a" &lt; "$b" ]]</code></td></tr>
+              <tr><td>&gt;</td><td class="desc">alphabetically after → <code>[[ "$a" &gt; "$b" ]]</code></td></tr>
+            </table>
+          </div>
+
+          <div class="code-block">
+            <div class="code-header"><span class="code-lang">bash — correct usage</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre><code><span class="c-comment"># NUMBERS — use arithmetic flags (-eq, -gt, -lt...)</span>
+<span class="c-var">COUNT</span>=<span class="c-num">10</span>
+<span class="c-keyword">if</span> [[ <span class="c-var">$COUNT</span> <span class="c-flag">-gt</span> <span class="c-num">5</span> ]]; <span class="c-keyword">then</span> <span class="c-cmd">echo</span> <span class="c-string">"Big count"</span>; <span class="c-keyword">fi</span>
+<span class="c-keyword">if</span> [[ <span class="c-var">$COUNT</span> <span class="c-flag">-eq</span> <span class="c-num">10</span> ]]; <span class="c-keyword">then</span> <span class="c-cmd">echo</span> <span class="c-string">"Exactly 10"</span>; <span class="c-keyword">fi</span>
+
+<span class="c-comment"># STRINGS — use == and !=</span>
+<span class="c-var">ENV</span>=<span class="c-string">"prod"</span>
+<span class="c-keyword">if</span> [[ <span class="c-string">"$ENV"</span> == <span class="c-string">"prod"</span> ]]; <span class="c-keyword">then</span> <span class="c-cmd">echo</span> <span class="c-string">"Production!"</span>; <span class="c-keyword">fi</span>
+<span class="c-keyword">if</span> [[ <span class="c-string">"$ENV"</span> != <span class="c-string">"dev"</span> ]]; <span class="c-keyword">then</span> <span class="c-cmd">echo</span> <span class="c-string">"Not dev"</span>; <span class="c-keyword">fi</span>
+
+<span class="c-comment"># ❌ WRONG — mixing them</span>
+<span class="c-keyword">if</span> [[ <span class="c-var">$COUNT</span> == <span class="c-num">10</span> ]]; <span class="c-keyword">then</span>   <span class="c-comment"># string comparison on a number — works but fragile</span>
+<span class="c-keyword">if</span> [[ <span class="c-string">"$ENV"</span> <span class="c-flag">-eq</span> <span class="c-string">"prod"</span> ]]; <span class="c-keyword">then</span>   <span class="c-comment"># ERROR: -eq needs integers</span></code></pre>
+          </div>
+          <div class="callout warning">
+            <div class="callout-icon">⚠️</div>
+            <div class="callout-content">
+              <div class="callout-title">[ ] vs [[ ]]</div>
+              Use <strong>[[ ]]</strong> (double brackets) always in bash scripts. It's smarter — supports regex, doesn't break on empty variables, handles &&/|| inside. Single <code>[ ]</code> is POSIX sh and has many gotchas.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════ SHELL: LOOPS ══════════════════════════════ -->
+    <section class="section" id="sh-loops">
+      <div class="section-hero">
+        <div class="section-tag">Shell Scripting · 03</div>
+        <div class="section-title">Loops — for & while</div>
+        <div class="section-desc">Automate repetitive tasks — loop through files, servers, numbers, or command output.</div>
+      </div>
+      <div class="topic-block open">
+        <div class="topic-header" onclick="toggleTopic(this)">
+          <div class="topic-icon" style="background:rgba(79,156,249,0.12)">🔁</div>
+          <div class="topic-title-wrap">
+            <div class="topic-title">for, while, until & break/continue</div>
+            <div class="topic-subtitle">for in · C-style for · while read · break · continue</div>
+          </div>
+          <div class="topic-chevron">▼</div>
+        </div>
+        <div class="topic-body">
+          <div class="code-block">
+            <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre><code><span class="c-comment">#!/bin/bash
+
+# FOR loop: iterate over list</span>
+<span class="c-keyword">for</span> server <span class="c-keyword">in</span> web1 web2 web3; <span class="c-keyword">do</span>
+    <span class="c-cmd">echo</span> <span class="c-string">"Deploying to $server..."</span>
+    <span class="c-cmd">ssh</span> ubuntu@$server <span class="c-string">'sudo systemctl restart nginx'</span>
+<span class="c-keyword">done</span>
+
+<span class="c-comment"># FOR loop: over files</span>
+<span class="c-keyword">for</span> file <span class="c-keyword">in</span> /var/log/*.log; <span class="c-keyword">do</span>
+    <span class="c-cmd">echo</span> <span class="c-string">"Processing: $file"</span>
+    <span class="c-cmd">gzip</span> <span class="c-string">"$file"</span>
+<span class="c-keyword">done</span>
+
+<span class="c-comment"># C-style FOR: numeric ranges</span>
+<span class="c-keyword">for</span> ((i=1; i&lt;=5; i++)); <span class="c-keyword">do</span>
+    <span class="c-cmd">echo</span> <span class="c-string">"Attempt $i"</span>
+<span class="c-keyword">done</span>
+
+<span class="c-comment"># Range with brace expansion</span>
+<span class="c-keyword">for</span> i <span class="c-keyword">in</span> {1..10}; <span class="c-keyword">do</span> <span class="c-cmd">echo</span> <span class="c-string">"$i"</span>; <span class="c-keyword">done</span>
+
+<span class="c-comment"># WHILE loop</span>
+<span class="c-var">RETRIES</span>=<span class="c-num">0</span>
+<span class="c-keyword">while</span> [[ <span class="c-var">$RETRIES</span> <span class="c-flag">-lt</span> <span class="c-num">5</span> ]]; <span class="c-keyword">do</span>
+    <span class="c-keyword">if</span> <span class="c-cmd">curl</span> <span class="c-flag">-sf</span> http://localhost:8080/health; <span class="c-keyword">then</span>
+        <span class="c-cmd">echo</span> <span class="c-string">"Service is up!"</span>
+        <span class="c-keyword">break</span>
+    <span class="c-keyword">fi</span>
+    <span class="c-var">RETRIES</span>=$((RETRIES + 1))
+    <span class="c-cmd">sleep</span> <span class="c-num">5</span>
+<span class="c-keyword">done</span>
+
+<span class="c-comment"># READ lines from file (CORRECT pattern!)</span>
+<span class="c-keyword">while</span> IFS= <span class="c-cmd">read</span> <span class="c-flag">-r</span> line; <span class="c-keyword">do</span>
+    <span class="c-cmd">echo</span> <span class="c-string">"Server: $line"</span>
+<span class="c-keyword">done</span> &lt; servers.txt
+
+<span class="c-comment"># READ from command output</span>
+<span class="c-cmd">df</span> <span class="c-flag">-h</span> | <span class="c-keyword">while</span> IFS= <span class="c-cmd">read</span> <span class="c-flag">-r</span> line; <span class="c-keyword">do</span>
+    <span class="c-cmd">echo</span> <span class="c-string">"Disk: $line"</span>
+<span class="c-keyword">done</span></code></pre>
+          </div>
+          <div class="callout danger">
+            <div class="callout-icon">❌</div>
+            <div class="callout-content">
+              <div class="callout-title">Common Mistake — for loop over command output</div>
+              <code>for line in $(cat file.txt)</code> — WRONG! Splits on whitespace, breaks on filenames with spaces.
+              Correct: Use <code>while IFS= read -r line; do ... done &lt; file.txt</code>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════ SHELL: FUNCTIONS ══════════════════════════════ -->
+    <section class="section" id="sh-func">
+      <div class="section-hero">
+        <div class="section-tag">Shell Scripting · 04</div>
+        <div class="section-title">Functions</div>
+        <div class="section-desc">Reuse code, organize scripts, and build modular automation.</div>
+      </div>
+      <div class="topic-block open">
+        <div class="topic-header" onclick="toggleTopic(this)">
+          <div class="topic-icon" style="background:rgba(199,125,255,0.1)">🧩</div>
+          <div class="topic-title-wrap">
+            <div class="topic-title">Defining & Using Functions</div>
+            <div class="topic-subtitle">local · return · $1 · function scope</div>
+          </div>
+          <div class="topic-chevron">▼</div>
+        </div>
+        <div class="topic-body">
+          <div class="code-block">
+            <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre><code><span class="c-comment">#!/bin/bash
+
+# DEFINE function</span>
+log() {
+    <span class="c-cmd">echo</span> <span class="c-string">"[$(date '+%H:%M:%S')] $*"</span>
+}
+
+deploy_app() {
+    <span class="c-keyword">local</span> <span class="c-var">env</span>=<span class="c-string">"$1"</span>           <span class="c-comment"># local = scoped to function</span>
+    <span class="c-keyword">local</span> <span class="c-var">version</span>=<span class="c-string">"$2"</span>
+    
+    log <span class="c-string">"Deploying $version to $env"</span>
+    
+    <span class="c-keyword">if</span> [[ <span class="c-flag">-z</span> <span class="c-string">"$env"</span> ]]; <span class="c-keyword">then</span>
+        <span class="c-cmd">echo</span> <span class="c-string">"ERROR: environment required"</span> &gt;&amp;2
+        <span class="c-keyword">return</span> <span class="c-num">1</span>        <span class="c-comment"># return non-zero = failure</span>
+    <span class="c-keyword">fi</span>
+    
+    <span class="c-comment"># ... deployment logic ...</span>
+    <span class="c-keyword">return</span> <span class="c-num">0</span>            <span class="c-comment"># return 0 = success</span>
+}
+
+check_service() {
+    <span class="c-keyword">local</span> <span class="c-var">service</span>=<span class="c-string">"$1"</span>
+    <span class="c-keyword">if</span> <span class="c-cmd">systemctl</span> is-active <span class="c-flag">--quiet</span> <span class="c-string">"$service"</span>; <span class="c-keyword">then</span>
+        log <span class="c-string">"$service is running ✓"</span>
+        <span class="c-keyword">return</span> <span class="c-num">0</span>
+    <span class="c-keyword">else</span>
+        log <span class="c-string">"$service is DOWN ✗"</span>
+        <span class="c-keyword">return</span> <span class="c-num">1</span>
+    <span class="c-keyword">fi</span>
+}
+
+<span class="c-comment"># CALL functions</span>
+deploy_app <span class="c-string">"staging"</span> <span class="c-string">"v1.2.3"</span>
+check_service nginx || <span class="c-cmd">systemctl</span> start nginx</code></pre>
+          </div>
+          <div class="callout tip">
+            <div class="callout-icon">💀</div>
+            <div class="callout-content">
+              <div class="callout-title">Pro Tips</div>
+              Always use <span class="keyword">local</span> for variables inside functions — without it, they're global and will clobber outer variables. Use <span class="keyword">return 1</span> to signal failure (not <code>exit 1</code> — that terminates the whole script).
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════ SHELL: ERROR HANDLING ══════════════════════════════ -->
+    <section class="section" id="sh-err">
+      <div class="section-hero">
+        <div class="section-tag">Shell Scripting · 05</div>
+        <div class="section-title">Error Handling</div>
+        <div class="section-desc">Write scripts that fail safely and loudly — not silently and destructively.</div>
+      </div>
+      <div class="topic-block open">
+        <div class="topic-header" onclick="toggleTopic(this)">
+          <div class="topic-icon" style="background:rgba(255,77,109,0.1)">🛡️</div>
+          <div class="topic-title-wrap">
+            <div class="topic-title">set -e, set -u, pipefail & exit codes</div>
+            <div class="topic-subtitle">$? · || · && · trap · set -euo pipefail</div>
+          </div>
+          <div class="topic-chevron">▼</div>
+        </div>
+        <div class="topic-body">
+          <h3>💡 Intuition</h3>
+          <p>By default, bash scripts keep running even when a command fails. This is dangerous in deployment scripts. <strong>set -e</strong> makes your script stop at the first error — like a safety net.</p>
+
+          <div class="code-block">
+            <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre><code><span class="c-comment">#!/bin/bash
+# PRODUCTION-READY header — always use this combo</span>
+<span class="c-keyword">set</span> <span class="c-flag">-euo pipefail</span>
+<span class="c-comment"># -e: exit on any error
+# -u: error on unset variables
+# -o pipefail: pipe fails if ANY command in it fails</span>
+
+<span class="c-comment"># EXIT CODES: 0 = success, anything else = failure</span>
+<span class="c-cmd">ls</span> /tmp
+<span class="c-cmd">echo</span> <span class="c-string">"Exit code: $?"</span>   <span class="c-comment"># 0</span>
+<span class="c-cmd">ls</span> /nonexistent
+<span class="c-cmd">echo</span> <span class="c-string">"Exit code: $?"</span>   <span class="c-comment"># 2 (with set -e, script stops here!)</span>
+
+<span class="c-comment"># OR operator: run second cmd if first fails</span>
+<span class="c-cmd">mkdir</span> /opt/app || { <span class="c-cmd">echo</span> <span class="c-string">"mkdir failed!"</span>; <span class="c-cmd">exit</span> <span class="c-num">1</span>; }
+
+<span class="c-comment"># AND operator: run second only if first succeeds</span>
+<span class="c-cmd">cd</span> /opt/app &amp;&amp; <span class="c-cmd">git</span> pull origin main
+
+<span class="c-comment"># TRAP: run cleanup on exit or error</span>
+<span class="c-keyword">trap</span> <span class="c-string">'echo "Script failed at line $LINENO"; cleanup'</span> ERR
+<span class="c-keyword">trap</span> <span class="c-string">'rm -f /tmp/lockfile'</span> EXIT    <span class="c-comment"># always runs on exit</span>
+
+cleanup() {
+    <span class="c-cmd">echo</span> <span class="c-string">"Cleaning up..."</span>
+    <span class="c-cmd">rm</span> <span class="c-flag">-f</span> /tmp/deploy.lock
+}
+
+<span class="c-comment"># HANDLE specific command failures</span>
+<span class="c-keyword">if</span> ! <span class="c-cmd">systemctl</span> start myapp 2&gt;/dev/null; <span class="c-keyword">then</span>
+    <span class="c-cmd">echo</span> <span class="c-string">"ERROR: Failed to start service"</span> &gt;&amp;2
+    <span class="c-cmd">journalctl</span> <span class="c-flag">-u</span> myapp <span class="c-flag">-n</span> 20 &gt;&amp;2
+    <span class="c-cmd">exit</span> <span class="c-num">1</span>
+<span class="c-keyword">fi</span></code></pre>
+          </div>
+
+          <div class="callout tip">
+            <div class="callout-icon">💀</div>
+            <div class="callout-content">
+              <div class="callout-title">Pro Tip — The Golden Header</div>
+              Every production script should start with exactly: <span class="keyword">#!/bin/bash</span> then <span class="keyword">set -euo pipefail</span>. This single line prevents 80% of script disasters.
+            </div>
+          </div>
+          <div class="callout warning">
+            <div class="callout-icon">⚠️</div>
+            <div class="callout-content">
+              <div class="callout-title">set -e gotcha</div>
+              With <code>set -e</code>, a failing command in an <code>if</code> condition won't trigger exit (that's correct behavior — that's the test). But a standalone failing command will. Use <code>command || true</code> to intentionally ignore a failure.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════ SHELL: QUOTING ══════════════════════════════ -->
+    <section class="section" id="sh-quote">
+      <div class="section-hero">
+        <div class="section-tag">Shell Scripting · 06</div>
+        <div class="section-title">Quoting Rules</div>
+        <div class="section-desc">The most misunderstood part of shell scripting — and the source of countless bugs.</div>
+      </div>
+      <div class="topic-block open">
+        <div class="topic-header" onclick="toggleTopic(this)">
+          <div class="topic-icon" style="background:rgba(0,212,255,0.1)">✏️</div>
+          <div class="topic-title-wrap">
+            <div class="topic-title">" vs ' vs no quotes</div>
+            <div class="topic-subtitle">double · single · unquoted · $() · word splitting</div>
+          </div>
+          <div class="topic-chevron">▼</div>
+        </div>
+        <div class="topic-body">
+          <div class="table-wrap">
+            <table>
+              <tr><th>Quote Type</th><th>Variables?</th><th class="desc">Use Case</th></tr>
+              <tr><td>"double"</td><td>✅ Expanded</td><td class="desc">Use for most cases — variables work, spaces preserved</td></tr>
+              <tr><td>'single'</td><td>❌ Literal</td><td class="desc">Use when you want NO substitution at all</td></tr>
+              <tr><td>no quotes</td><td>✅ + split</td><td class="desc">Avoid — causes word splitting and glob expansion</td></tr>
+            </table>
+          </div>
+          <div class="code-block">
+            <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre><code><span class="c-var">NAME</span>=<span class="c-string">"John Doe"</span>
+<span class="c-var">FILE</span>=<span class="c-string">"my file.txt"</span>
+
+<span class="c-comment"># Double quotes: variables expand, spaces preserved</span>
+<span class="c-cmd">echo</span> <span class="c-string">"Hello, $NAME"</span>       <span class="c-comment"># Hello, John Doe</span>
+
+<span class="c-comment"># Single quotes: NOTHING expands — literal string</span>
+<span class="c-cmd">echo</span> <span class="c-string">'Hello, $NAME'</span>       <span class="c-comment"># Hello, $NAME</span>
+
+<span class="c-comment"># No quotes: word splitting! This BREAKS with spaces in filename</span>
+<span class="c-cmd">cp</span> $FILE /tmp/            <span class="c-comment"># ERROR: treats "my" and "file.txt" as separate args</span>
+<span class="c-cmd">cp</span> <span class="c-string">"$FILE"</span> /tmp/          <span class="c-comment"># CORRECT</span>
+
+<span class="c-comment"># In sed commands with variable: must use double quotes</span>
+<span class="c-var">OLD</span>=<span class="c-string">"localhost"</span>; <span class="c-var">NEW</span>=<span class="c-string">"prod-db"</span>
+<span class="c-cmd">sed</span> <span class="c-string">"s/$OLD/$NEW/g"</span> config.txt   <span class="c-comment"># variables expand in sed pattern</span>
+<span class="c-cmd">sed</span> <span class="c-string">'s/$OLD/$NEW/g'</span> config.txt   <span class="c-comment"># WRONG: literally "$OLD"</span>
+
+<span class="c-comment"># Mixing: when you need both</span>
+<span class="c-cmd">echo</span> <span class="c-string">"Price: \$5 for $NAME"</span>  <span class="c-comment"># escape $ to print literal, or use variable</span></code></pre>
+          </div>
+          <div class="callout tip">
+            <div class="callout-icon">💀</div>
+            <div class="callout-content">
+              <div class="callout-title">Golden Rule</div>
+              <strong>Always double-quote your variables.</strong> <span class="keyword">"$variable"</span> — never just <span class="keyword">$variable</span>. This alone will save you from 90% of shell scripting bugs involving spaces or special characters.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════ GIT BASICS ══════════════════════════════ -->
+    <section class="section" id="git-basics">
+      <div class="section-hero">
+        <div class="section-tag">Git & GitHub · 01</div>
+        <div class="section-title">Git — Core Concepts</div>
+        <div class="section-desc">"Every line of code tells a story to the world." — The tool that makes collaboration and history possible.</div>
+      </div>
+
+      <div class="topic-block open">
+        <div class="topic-header" onclick="toggleTopic(this)">
+          <div class="topic-icon" style="background:rgba(0,255,157,0.1)">📖</div>
+          <div class="topic-title-wrap">
+            <div class="topic-title">What is Git? What is GitHub?</div>
+            <div class="topic-subtitle">Version Control · Local vs Remote · Linus Torvalds 2005</div>
+          </div>
+          <div class="topic-chevron">▼</div>
+        </div>
+        <div class="topic-body">
+          <h3>💡 Intuition</h3>
+          <p>Imagine writing a novel and saving a copy every time you finish a chapter — so you can go back if you mess something up. <strong>Git does exactly this for code.</strong> It tracks every change, who made it, and when. You can rewind time.</p>
+
+          <div class="callout info">
+            <div class="callout-icon">🏛️</div>
+            <div class="callout-content">
+              <div class="callout-title">Who Created What</div>
+              <strong>Git</strong> — Created by <strong>Linus Torvalds</strong> in <strong>2005</strong> (same person who created the Linux kernel). He built it in 2 weeks to manage Linux kernel development.<br><br>
+              <strong>GitHub</strong> — Created by <strong>Tom Preston-Werner, Chris Wanstrath, and PJ Hyett</strong> in San Francisco. It's a website that hosts Git repositories online.
+            </div>
+          </div>
+
+          <h3>⚙️ Git vs GitHub — Not the Same Thing</h3>
+          <div class="table-wrap">
+            <table>
+              <tr><th>Git</th><th>GitHub</th></tr>
+              <tr><td>A <strong>tool</strong> (software) you install on your computer</td><td>A <strong>website/service</strong> that hosts Git repositories online</td></tr>
+              <tr><td>Tracks changes to your code locally</td><td>Stores your code in the cloud for sharing/collaboration</td></tr>
+              <tr><td>Works offline — no internet needed</td><td>Requires internet</td></tr>
+              <tr><td>Free, open-source CLI tool</td><td>Platform with free and paid plans</td></tr>
+              <tr><td><code>git commit</code>, <code>git branch</code>...</td><td>Pull Requests, Issues, Actions, Repos...</td></tr>
+            </table>
+          </div>
+
+          <p><em>Analogy: Git is like Microsoft Word's "Track Changes" feature. GitHub is like Google Drive — where you store and share the document.</em></p>
+        </div>
+      </div>
+
+      <div class="topic-block">
+        <div class="topic-header" onclick="toggleTopic(this)">
+          <div class="topic-icon" style="background:rgba(79,156,249,0.12)">🗺️</div>
+          <div class="topic-title-wrap">
+            <div class="topic-title">The 4 Areas of Git</div>
+            <div class="topic-subtitle">Working Directory · Staging Area · Local Repo · Remote Repo</div>
+          </div>
+          <div class="topic-chevron">▼</div>
+        </div>
+        <div class="topic-body">
+          <h3>💡 Intuition</h3>
+          <p>Git has 4 distinct "zones" that your code moves through. Understanding this is the key to understanding every git command.</p>
+
+          <div class="step-list">
+            <div class="step-item">
+              <div class="step-num">1</div>
+              <div class="step-content">
+                <strong>💻 Working Directory</strong> — The project folder on your computer. When you create, edit, or delete files, changes happen here first. Git tracks them but hasn't saved them yet.
+              </div>
+            </div>
+            <div class="step-item">
+              <div class="step-num">2</div>
+              <div class="step-content">
+                <strong>📋 Staging Area</strong> — Where you prep changes before committing. Like "I'm almost ready! Let me pick which changes to include." Use <code>git add</code> to move changes here. You choose WHAT to commit.
+              </div>
+            </div>
+            <div class="step-item">
+              <div class="step-num">3</div>
+              <div class="step-content">
+                <strong>🏡 Local Repository</strong> — A Git repo that lives on your own computer. Use <code>git commit</code> to permanently save staged changes here with a message. This is your local history.
+              </div>
+            </div>
+            <div class="step-item">
+              <div class="step-num">4</div>
+              <div class="step-content">
+                <strong>☁️ Remote Repository</strong> — A GitHub repo stored on the internet (for the latest version). Use <code>git push</code> to upload your local commits here. This is the source of truth for teams.
+              </div>
+            </div>
+          </div>
+
+          <div class="code-block">
+            <div class="code-header"><span class="code-lang">the flow</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre><code><span class="c-comment"># The journey of a file change:</span>
+
+Working Directory  →(git add)→  Staging Area  →(git commit)→  Local Repo  →(git push)→  Remote (GitHub)
+
+<span class="c-comment"># Reverse direction:</span>
+
+Remote (GitHub)  →(git clone/pull)→  Local Repo  →(git checkout)→  Working Directory</code></pre>
+          </div>
+
+          <div class="callout info">
+            <div class="callout-icon">🍴</div>
+            <div class="callout-content">
+              <div class="callout-title">Forking</div>
+              <strong>Forking</strong> is creating a personal copy of someone else's repository on GitHub. You can modify your fork freely without affecting the original. Used in open-source contributions — fork → make changes → send a Pull Request back.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════ GIT COMMANDS ══════════════════════════════ -->
+    <section class="section" id="git-commands">
+      <div class="section-hero">
+        <div class="section-tag">Git & GitHub · 02</div>
+        <div class="section-title">Git Commands</div>
+        <div class="section-desc">The commands you'll use every day as a developer and DevOps engineer.</div>
+      </div>
+
+      <div class="topic-block open">
+        <div class="topic-header" onclick="toggleTopic(this)">
+          <div class="topic-icon" style="background:rgba(0,212,255,0.1)">⌨️</div>
+          <div class="topic-title-wrap">
+            <div class="topic-title">Core Git Commands — Full Reference</div>
+            <div class="topic-subtitle">init · remote · add · commit · push · pull · status · branch</div>
+          </div>
+          <div class="topic-chevron">▼</div>
+        </div>
+        <div class="topic-body">
+          <div class="table-wrap">
+            <table>
+              <tr><th>Command</th><th>Full Syntax</th><th class="desc">What it Does</th></tr>
+              <tr><td>git init</td><td>git init</td><td class="desc">Initialize a new local Git repository in current folder. Creates the .git/ directory.</td></tr>
+              <tr><td>git remote</td><td>git remote add origin URL</td><td class="desc">Connect your local repository to a GitHub (remote) repository. <code>origin</code> is the conventional name.</td></tr>
+              <tr><td>git clone</td><td>git clone URL</td><td class="desc">Download a remote repository to your local machine — creates a folder with all history</td></tr>
+              <tr><td>git status</td><td>git status</td><td class="desc">Check the status of your files — which are modified, staged, or untracked</td></tr>
+              <tr><td>git add</td><td>git add file.txt / git add .</td><td class="desc">Stage changes for commit. <code>.</code> stages everything in current directory</td></tr>
+              <tr><td>git commit</td><td>git commit -m "message"</td><td class="desc">Save staged changes to local repository with a descriptive message</td></tr>
+              <tr><td>git push</td><td>git push origin main</td><td class="desc">Upload your local commits to GitHub (remote). Push code to the world.</td></tr>
+              <tr><td>git pull</td><td>git pull origin main</td><td class="desc">Download and merge remote changes into your local branch</td></tr>
+              <tr><td>git branch</td><td>git branch -M main</td><td class="desc">List, create, or rename branches. <code>-M</code> = rename (moves) current branch</td></tr>
+              <tr><td>git log</td><td>git log --oneline</td><td class="desc">View commit history. <code>--oneline</code> shows compact one-line per commit view</td></tr>
+              <tr><td>git diff</td><td>git diff</td><td class="desc">Show what changed in your working directory that isn't staged yet</td></tr>
+              <tr><td>git stash</td><td>git stash / git stash pop</td><td class="desc">Temporarily save changes without committing. Pop to restore them later.</td></tr>
+            </table>
+          </div>
+
+          <div class="code-block">
+            <div class="code-header"><span class="code-lang">bash — complete new project workflow</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre><code><span class="c-comment"># 1. Create a new repo locally</span>
+<span class="c-cmd">git</span> init
+
+<span class="c-comment"># 2. Rename branch to 'main' (best practice)</span>
+<span class="c-cmd">git</span> branch <span class="c-flag">-M</span> main
+
+<span class="c-comment"># 3. Connect to GitHub remote</span>
+<span class="c-cmd">git</span> remote add origin https://github.com/username/myproject.git
+
+<span class="c-comment"># 4. Check what's changed</span>
+<span class="c-cmd">git</span> status
+
+<span class="c-comment"># 5. Stage all files</span>
+<span class="c-cmd">git</span> add .
+
+<span class="c-comment"># 6. Commit with a message</span>
+<span class="c-cmd">git</span> commit <span class="c-flag">-m</span> <span class="c-string">"Initial commit: add project setup"</span>
+
+<span class="c-comment"># 7. Push to GitHub</span>
+<span class="c-cmd">git</span> push <span class="c-flag">-u</span> origin main   <span class="c-comment"># -u sets upstream (only needed first time)</span>
+
+<span class="c-comment"># ── DAILY WORKFLOW ──</span>
+<span class="c-comment"># Pull latest changes first</span>
+<span class="c-cmd">git</span> pull origin main
+
+<span class="c-comment"># Make changes, then stage + commit + push</span>
+<span class="c-cmd">git</span> add .
+<span class="c-cmd">git</span> commit <span class="c-flag">-m</span> <span class="c-string">"fix: resolve nginx config issue"</span>
+<span class="c-cmd">git</span> push origin main</code></pre>
+          </div>
+
+          <div class="callout tip">
+            <div class="callout-icon">💀</div>
+            <div class="callout-content">
+              <div class="callout-title">Pro Tips</div>
+              Write commit messages in present tense: <span class="keyword">"add feature"</span> not "added feature". Use prefixes: <span class="keyword">feat:</span>, <span class="keyword">fix:</span>, <span class="keyword">chore:</span>, <span class="keyword">docs:</span>. Always <code>git pull</code> before you start working to avoid merge conflicts.
+            </div>
+          </div>
+          <div class="callout danger">
+            <div class="callout-icon">❌</div>
+            <div class="callout-content">
+              <div class="callout-title">Never Push Secrets to GitHub</div>
+              Once pushed, secrets (passwords, API keys) are in git history — even if you delete the file later. Add <code>.env</code> to <code>.gitignore</code> before your first commit. Use <code>git secret</code> or GitHub Secrets for sensitive data.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════ DEVOPS WHAT ══════════════════════════════ -->
+    <section class="section" id="devops-what">
+      <div class="section-hero">
+        <div class="section-tag">DevOps Core · 01</div>
+        <div class="section-title">What is DevOps?</div>
+        <div class="section-desc">Not a tool, not a role — a culture and practice for shipping software fast and reliably.</div>
+      </div>
+      <div class="topic-block open">
+        <div class="topic-header" onclick="toggleTopic(this)">
+          <div class="topic-icon" style="background:rgba(0,255,157,0.1)">🚀</div>
+          <div class="topic-title-wrap">
+            <div class="topic-title">DevOps — Practical Explanation</div>
+            <div class="topic-subtitle">Culture · Automation · Measurement · Sharing</div>
+          </div>
+          <div class="topic-chevron">▼</div>
+        </div>
+        <div class="topic-body">
+          <h3>💡 Intuition</h3>
+          <p>Before DevOps: developers would write code, throw it "over the wall" to operations, and ops would struggle to deploy it. Code would pile up, deployments were rare, scary events. DevOps broke down this wall — the same team (or culture) owns writing AND running code.</p>
+
+          <h3>⚙️ Technical Definition</h3>
+          <p>DevOps is the combination of <strong>cultural philosophies, practices, and tools</strong> that increases an organization's ability to deliver applications at <strong>high velocity</strong>. The key outcomes: faster delivery, more reliability, better collaboration.</p>
+
+          <div class="step-list">
+            <div class="step-item">
+              <div class="step-num">1</div>
+              <div class="step-content"><strong>Continuous Integration (CI)</strong> — Developers merge code frequently. Each merge triggers automated tests. Bugs found early, not in production.</div>
+            </div>
+            <div class="step-item">
+              <div class="step-num">2</div>
+              <div class="step-content"><strong>Continuous Delivery (CD)</strong> — Every passing build is automatically deployable. Release is a business decision, not a technical nightmare.</div>
+            </div>
+            <div class="step-item">
+              <div class="step-num">3</div>
+              <div class="step-content"><strong>Infrastructure as Code</strong> — Servers defined in code (Terraform, Ansible). Reproducible, version-controlled infrastructure.</div>
+            </div>
+            <div class="step-item">
+              <div class="step-num">4</div>
+              <div class="step-content"><strong>Monitoring & Feedback</strong> — Measure everything in production. Metrics → alerting → rapid response.</div>
+            </div>
+          </div>
+
+          <div class="callout info">
+            <div class="callout-icon">🎯</div>
+            <div class="callout-content">
+              <div class="callout-title">The CALMS Framework</div>
+              <strong>C</strong>ulture, <strong>A</strong>utomation, <strong>L</strong>ean, <strong>M</strong>easurement, <strong>S</strong>haring. This is the mental model interviewers expect you to know.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════ DEVOPS CI/CD ══════════════════════════════ -->
+    <section class="section" id="devops-cicd">
+      <div class="section-hero">
+        <div class="section-tag">DevOps Core · 02</div>
+        <div class="section-title">CI/CD Basics</div>
+        <div class="section-desc">The pipeline that takes code from developer's laptop to production automatically.</div>
+      </div>
+      <div class="topic-block open">
+        <div class="topic-header" onclick="toggleTopic(this)">
+          <div class="topic-icon" style="background:rgba(79,156,249,0.12)">🔄</div>
+          <div class="topic-title-wrap">
+            <div class="topic-title">CI/CD Pipeline Flow</div>
+            <div class="topic-subtitle">push → build → test → deploy</div>
+          </div>
+          <div class="topic-chevron">▼</div>
+        </div>
+        <div class="topic-body">
+          <h3>💡 Intuition</h3>
+          <p>A CI/CD pipeline is like an assembly line for code. Each station (stage) does one job. If any station fails, the line stops and alerts you. Code only reaches production if it passes every station.</p>
+
+          <div class="code-block">
+            <div class="code-header"><span class="code-lang">GitHub Actions — .github/workflows/deploy.yml</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre><code><span class="c-var">name</span>: <span class="c-string">Deploy Application</span>
+
+<span class="c-var">on</span>:
+  <span class="c-var">push</span>:
+    <span class="c-var">branches</span>: [main]
+
+<span class="c-var">jobs</span>:
+  <span class="c-var">build-and-test</span>:
+    <span class="c-var">runs-on</span>: ubuntu-latest
+    <span class="c-var">steps</span>:
+      - <span class="c-var">uses</span>: actions/checkout@v3
+      
+      - <span class="c-var">name</span>: Install dependencies
+        <span class="c-var">run</span>: npm install
+      
+      - <span class="c-var">name</span>: Run tests
+        <span class="c-var">run</span>: npm test
+      
+      - <span class="c-var">name</span>: Build Docker image
+        <span class="c-var">run</span>: docker build -t myapp:${{ github.sha }} .
+      
+      - <span class="c-var">name</span>: Push to registry
+        <span class="c-var">run</span>: docker push myapp:${{ github.sha }}
+
+  <span class="c-var">deploy</span>:
+    <span class="c-var">needs</span>: build-and-test   <span class="c-comment"># only runs if previous job passes</span>
+    <span class="c-var">runs-on</span>: ubuntu-latest
+    <span class="c-var">steps</span>:
+      - <span class="c-var">name</span>: Deploy to server
+        <span class="c-var">run</span>: |
+          ssh deploy@${{ secrets.SERVER_IP }} \
+            "docker pull myapp:${{ github.sha }} && \
+             docker stop myapp && \
+             docker run -d --name myapp myapp:${{ github.sha }}"</code></pre>
+          </div>
+
+          <h3>🔄 CI vs CD vs CD</h3>
+          <div class="table-wrap">
+            <table>
+              <tr><th>Term</th><th class="desc">Meaning</th><th class="desc">Key Idea</th></tr>
+              <tr><td>CI</td><td class="desc">Continuous Integration</td><td class="desc">Merge + test automatically on every push</td></tr>
+              <tr><td>CD (Delivery)</td><td class="desc">Continuous Delivery</td><td class="desc">Auto-deploy to staging; manual to production</td></tr>
+              <tr><td>CD (Deployment)</td><td class="desc">Continuous Deployment</td><td class="desc">Auto-deploy all the way to production</td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════ DEVOPS REAL SCRIPTS ══════════════════════════════ -->
+    <section class="section" id="devops-scripts">
+      <div class="section-hero">
+        <div class="section-tag">DevOps Core · 03</div>
+        <div class="section-title">Real DevOps Script Examples</div>
+        <div class="section-desc">Production-grade scripts you'd actually write on the job.</div>
+      </div>
+
+      <div class="topic-block open">
+        <div class="topic-header" onclick="toggleTopic(this)">
+          <div class="topic-icon" style="background:rgba(0,255,157,0.1)">📜</div>
+          <div class="topic-title-wrap">
+            <div class="topic-title">Health Check Script</div>
+            <div class="topic-subtitle">Checks services + disk + memory, sends alerts</div>
+          </div>
+          <div class="topic-chevron">▼</div>
+        </div>
+        <div class="topic-body">
+          <div class="code-block">
+            <div class="code-header"><span class="code-lang">bash — health_check.sh</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre><code><span class="c-comment">#!/bin/bash
+set -euo pipefail</span>
+
+<span class="c-var">SERVICES</span>=(<span class="c-string">"nginx"</span> <span class="c-string">"postgresql"</span> <span class="c-string">"redis"</span>)
+<span class="c-var">DISK_THRESHOLD</span>=<span class="c-num">80</span>
+<span class="c-var">MEM_THRESHOLD</span>=<span class="c-num">90</span>
+<span class="c-var">ALERT_EMAIL</span>=<span class="c-string">"ops@company.com"</span>
+<span class="c-var">FAILED</span>=<span class="c-num">0</span>
+
+log() { <span class="c-cmd">echo</span> <span class="c-string">"[$(date '+%Y-%m-%d %H:%M:%S')] $*"</span>; }
+
+<span class="c-comment"># Check services</span>
+<span class="c-keyword">for</span> service <span class="c-keyword">in</span> <span class="c-string">"${SERVICES[@]}"</span>; <span class="c-keyword">do</span>
+    <span class="c-keyword">if</span> <span class="c-cmd">systemctl</span> is-active <span class="c-flag">--quiet</span> <span class="c-string">"$service"</span>; <span class="c-keyword">then</span>
+        log <span class="c-string">"✓ $service is running"</span>
+    <span class="c-keyword">else</span>
+        log <span class="c-string">"✗ $service is DOWN — attempting restart"</span>
+        <span class="c-cmd">systemctl</span> restart <span class="c-string">"$service"</span> || <span class="c-var">FAILED</span>=$((FAILED+1))
+    <span class="c-keyword">fi</span>
+<span class="c-keyword">done</span>
+
+<span class="c-comment"># Check disk usage</span>
+<span class="c-var">DISK_USAGE</span>=$(<span class="c-cmd">df</span> / | <span class="c-cmd">awk</span> <span class="c-string">'NR==2 {print $5}'</span> | <span class="c-cmd">tr</span> <span class="c-flag">-d</span> <span class="c-string">'%'</span>)
+<span class="c-keyword">if</span> [[ <span class="c-var">$DISK_USAGE</span> <span class="c-flag">-gt</span> <span class="c-var">$DISK_THRESHOLD</span> ]]; <span class="c-keyword">then</span>
+    log <span class="c-string">"⚠ Disk usage: ${DISK_USAGE}% (threshold: ${DISK_THRESHOLD}%)"</span>
+    <span class="c-var">FAILED</span>=$((FAILED+1))
+<span class="c-keyword">fi</span>
+
+<span class="c-comment"># Check memory</span>
+<span class="c-var">MEM_USAGE</span>=$(<span class="c-cmd">free</span> | <span class="c-cmd">awk</span> <span class="c-string">'/Mem:/ {printf "%.0f", $3/$2*100}'</span>)
+<span class="c-keyword">if</span> [[ <span class="c-var">$MEM_USAGE</span> <span class="c-flag">-gt</span> <span class="c-var">$MEM_THRESHOLD</span> ]]; <span class="c-keyword">then</span>
+    log <span class="c-string">"⚠ Memory usage: ${MEM_USAGE}%"</span>
+    <span class="c-var">FAILED</span>=$((FAILED+1))
+<span class="c-keyword">fi</span>
+
+<span class="c-keyword">if</span> [[ <span class="c-var">$FAILED</span> <span class="c-flag">-gt</span> <span class="c-num">0</span> ]]; <span class="c-keyword">then</span>
+    log <span class="c-string">"ALERT: $FAILED issue(s) found"</span>
+    <span class="c-cmd">mail</span> <span class="c-flag">-s</span> <span class="c-string">"Server Alert: $FAILED issues"</span> <span class="c-string">"$ALERT_EMAIL"</span> &lt;&lt;&lt; <span class="c-string">"Check logs!"</span>
+    <span class="c-cmd">exit</span> <span class="c-num">1</span>
+<span class="c-keyword">fi</span>
+
+log <span class="c-string">"All checks passed ✓"</span></code></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="topic-block">
+        <div class="topic-header" onclick="toggleTopic(this)">
+          <div class="topic-icon" style="background:rgba(79,156,249,0.12)">🚀</div>
+          <div class="topic-title-wrap">
+            <div class="topic-title">Zero-Downtime Deployment Script</div>
+            <div class="topic-subtitle">Blue-green style deploy with rollback</div>
+          </div>
+          <div class="topic-chevron">▼</div>
+        </div>
+        <div class="topic-body">
+          <div class="code-block">
+            <div class="code-header"><span class="code-lang">bash — deploy.sh</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre><code><span class="c-comment">#!/bin/bash
+set -euo pipefail</span>
+
+<span class="c-var">APP_NAME</span>=<span class="c-string">"myapp"</span>
+<span class="c-var">NEW_VERSION</span>=<span class="c-string">"${1:?ERROR: Version required}"</span>
+<span class="c-var">DEPLOY_DIR</span>=<span class="c-string">"/opt/deploys"</span>
+<span class="c-var">CURRENT_LINK</span>=<span class="c-string">"/opt/current"</span>
+<span class="c-var">NEW_DIR</span>=<span class="c-string">"${DEPLOY_DIR}/${NEW_VERSION}"</span>
+
+log() { <span class="c-cmd">echo</span> <span class="c-string">"[$(date '+%H:%M:%S')] [DEPLOY] $*"</span>; }
+
+rollback() {
+    log <span class="c-string">"ROLLBACK triggered — reverting..."</span>
+    <span class="c-keyword">if</span> [[ <span class="c-flag">-L</span> <span class="c-string">"${CURRENT_LINK}.prev"</span> ]]; <span class="c-keyword">then</span>
+        <span class="c-cmd">ln</span> <span class="c-flag">-sfn</span> <span class="c-string">"$(readlink ${CURRENT_LINK}.prev)"</span> <span class="c-string">"$CURRENT_LINK"</span>
+        <span class="c-cmd">systemctl</span> restart <span class="c-string">"$APP_NAME"</span>
+        log <span class="c-string">"Rolled back successfully"</span>
+    <span class="c-keyword">fi</span>
+}
+
+<span class="c-keyword">trap</span> rollback ERR
+
+log <span class="c-string">"Starting deploy of version: $NEW_VERSION"</span>
+
+<span class="c-comment"># 1. Create new version directory</span>
+<span class="c-cmd">mkdir</span> <span class="c-flag">-p</span> <span class="c-string">"$NEW_DIR"</span>
+<span class="c-cmd">cp</span> <span class="c-flag">-r</span> /tmp/release/* <span class="c-string">"$NEW_DIR/"</span>
+
+<span class="c-comment"># 2. Save current link as previous</span>
+[[ <span class="c-flag">-L</span> <span class="c-string">"$CURRENT_LINK"</span> ]] && <span class="c-cmd">cp</span> <span class="c-flag">-P</span> <span class="c-string">"$CURRENT_LINK"</span> <span class="c-string">"${CURRENT_LINK}.prev"</span>
+
+<span class="c-comment"># 3. Switch symlink atomically</span>
+<span class="c-cmd">ln</span> <span class="c-flag">-sfn</span> <span class="c-string">"$NEW_DIR"</span> <span class="c-string">"$CURRENT_LINK"</span>
+
+<span class="c-comment"># 4. Restart service</span>
+<span class="c-cmd">systemctl</span> restart <span class="c-string">"$APP_NAME"</span>
+
+<span class="c-comment"># 5. Health check (with retry)</span>
+<span class="c-keyword">for</span> i <span class="c-keyword">in</span> {1..12}; <span class="c-keyword">do</span>
+    <span class="c-keyword">if</span> <span class="c-cmd">curl</span> <span class="c-flag">-sf</span> http://localhost:8080/health; <span class="c-keyword">then</span>
+        log <span class="c-string">"Health check passed ✓"</span>
+        <span class="c-keyword">break</span>
+    <span class="c-keyword">fi</span>
+    [[ $i <span class="c-flag">-eq</span> <span class="c-num">12</span> ]] && { log <span class="c-string">"Health check FAILED after 60s"</span>; <span class="c-cmd">exit</span> <span class="c-num">1</span>; }
+    log <span class="c-string">"Waiting for service... ($i/12)"</span>
+    <span class="c-cmd">sleep</span> <span class="c-num">5</span>
+<span class="c-keyword">done</span>
+
+log <span class="c-string">"Deploy complete! Running version: $NEW_VERSION"</span></code></pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════ DEVOPS TOOLS ══════════════════════════════ -->
+    <section class="section" id="devops-tools">
+      <div class="section-hero">
+        <div class="section-tag">DevOps Core · 04</div>
+        <div class="section-title">Tools & Commands</div>
+        <div class="section-desc">curl, wget, systemctl, networking — the toolkit every DevOps engineer uses daily.</div>
+      </div>
+
+      <div class="topic-block open">
+        <div class="topic-header" onclick="toggleTopic(this)">
+          <div class="topic-icon" style="background:rgba(0,212,255,0.1)">🌐</div>
+          <div class="topic-title-wrap">
+            <div class="topic-title">curl & wget</div>
+            <div class="topic-subtitle">HTTP requests, file downloads, API testing</div>
+          </div>
+          <div class="topic-chevron">▼</div>
+        </div>
+        <div class="topic-body">
+          <div class="code-block">
+            <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre><code><span class="c-comment"># curl: transfer data from/to servers</span>
+<span class="c-cmd">curl</span> https://api.example.com/health      <span class="c-comment"># GET request</span>
+<span class="c-cmd">curl</span> <span class="c-flag">-s</span> URL                             <span class="c-comment"># silent (no progress bar)</span>
+<span class="c-cmd">curl</span> <span class="c-flag">-f</span> URL                             <span class="c-comment"># fail on HTTP errors (for scripts!)</span>
+<span class="c-cmd">curl</span> <span class="c-flag">-o</span> /tmp/file.zip https://...       <span class="c-comment"># save to file</span>
+<span class="c-cmd">curl</span> <span class="c-flag">-sf</span> URL | <span class="c-cmd">bash</span>                    <span class="c-comment"># download and run (be careful!)</span>
+
+<span class="c-comment"># curl POST with JSON</span>
+<span class="c-cmd">curl</span> <span class="c-flag">-X</span> POST https://api.example.com/deploy \
+  <span class="c-flag">-H</span> <span class="c-string">"Content-Type: application/json"</span> \
+  <span class="c-flag">-H</span> <span class="c-string">"Authorization: Bearer $TOKEN"</span> \
+  <span class="c-flag">-d</span> <span class="c-string">'{"version": "v1.2.3", "env": "prod"}'</span>
+
+<span class="c-comment"># Check response code only</span>
+<span class="c-var">STATUS</span>=$(<span class="c-cmd">curl</span> <span class="c-flag">-o</span> /dev/null <span class="c-flag">-w</span> <span class="c-string">"%{http_code}"</span> <span class="c-flag">-s</span> https://example.com)
+[[ <span class="c-string">"$STATUS"</span> == <span class="c-string">"200"</span> ]] || <span class="c-cmd">echo</span> <span class="c-string">"Site down! Code: $STATUS"</span>
+
+<span class="c-comment"># wget: simpler file downloading</span>
+<span class="c-cmd">wget</span> https://releases.example.com/app-v1.2.tar.gz
+<span class="c-cmd">wget</span> <span class="c-flag">-q</span> <span class="c-flag">-O</span> /tmp/release.tar.gz https://...  <span class="c-comment"># quiet, save to specific file</span></code></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="topic-block">
+        <div class="topic-header" onclick="toggleTopic(this)">
+          <div class="topic-icon" style="background:rgba(255,140,66,0.1)">⚙️</div>
+          <div class="topic-title-wrap">
+            <div class="topic-title">systemctl — Service Management</div>
+            <div class="topic-subtitle">start · stop · restart · enable · status · logs</div>
+          </div>
+          <div class="topic-chevron">▼</div>
+        </div>
+        <div class="topic-body">
+          <div class="code-block">
+            <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre><code><span class="c-comment"># Basic service control</span>
+<span class="c-cmd">systemctl</span> start nginx          <span class="c-comment"># start service</span>
+<span class="c-cmd">systemctl</span> stop nginx           <span class="c-comment"># stop service</span>
+<span class="c-cmd">systemctl</span> restart nginx        <span class="c-comment"># stop + start</span>
+<span class="c-cmd">systemctl</span> reload nginx         <span class="c-comment"># reload config without restart</span>
+<span class="c-cmd">systemctl</span> status nginx         <span class="c-comment"># detailed status</span>
+
+<span class="c-comment"># Enable/disable at boot</span>
+<span class="c-cmd">systemctl</span> enable nginx         <span class="c-comment"># start on boot</span>
+<span class="c-cmd">systemctl</span> disable nginx        <span class="c-comment"># don't start on boot</span>
+<span class="c-cmd">systemctl</span> enable <span class="c-flag">--now</span> nginx   <span class="c-comment"># enable AND start immediately</span>
+
+<span class="c-comment"># Check state (useful in scripts)</span>
+<span class="c-cmd">systemctl</span> is-active nginx      <span class="c-comment"># prints "active" or "inactive"</span>
+<span class="c-cmd">systemctl</span> is-active <span class="c-flag">--quiet</span> nginx && <span class="c-cmd">echo</span> <span class="c-string">"Running"</span>
+
+<span class="c-comment"># View logs (journald)</span>
+<span class="c-cmd">journalctl</span> <span class="c-flag">-u</span> nginx             <span class="c-comment"># all logs for nginx</span>
+<span class="c-cmd">journalctl</span> <span class="c-flag">-u</span> nginx <span class="c-flag">-f</span>         <span class="c-comment"># follow (live)</span>
+<span class="c-cmd">journalctl</span> <span class="c-flag">-u</span> nginx <span class="c-flag">-n</span> 50      <span class="c-comment"># last 50 lines</span>
+<span class="c-cmd">journalctl</span> <span class="c-flag">-u</span> nginx <span class="c-flag">--since</span> <span class="c-string">"1 hour ago"</span></code></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="topic-block">
+        <div class="topic-header" onclick="toggleTopic(this)">
+          <div class="topic-icon" style="background:rgba(0,255,157,0.1)">🌐</div>
+          <div class="topic-title-wrap">
+            <div class="topic-title">Networking Commands</div>
+            <div class="topic-subtitle">ping · netstat · ss · lsof · ip · nslookup</div>
+          </div>
+          <div class="topic-chevron">▼</div>
+        </div>
+        <div class="topic-body">
+          <div class="code-block">
+            <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+            <pre><code><span class="c-comment"># Connectivity</span>
+<span class="c-cmd">ping</span> <span class="c-flag">-c4</span> google.com             <span class="c-comment"># 4 pings</span>
+<span class="c-cmd">traceroute</span> google.com          <span class="c-comment"># trace route</span>
+<span class="c-cmd">nslookup</span> example.com          <span class="c-comment"># DNS lookup</span>
+<span class="c-cmd">dig</span> example.com A              <span class="c-comment"># detailed DNS query</span>
+
+<span class="c-comment"># Ports & listening services</span>
+<span class="c-cmd">ss</span> <span class="c-flag">-tlnp</span>                        <span class="c-comment"># TCP listening ports + process</span>
+<span class="c-cmd">ss</span> <span class="c-flag">-tulnp</span>                       <span class="c-comment"># TCP + UDP</span>
+<span class="c-cmd">lsof</span> <span class="c-flag">-i</span> :80                     <span class="c-comment"># what's using port 80</span>
+<span class="c-cmd">lsof</span> <span class="c-flag">-i</span> :8080 <span class="c-flag">-i</span> :443          <span class="c-comment"># multiple ports</span>
+
+<span class="c-comment"># Network interfaces</span>
+<span class="c-cmd">ip</span> addr show                   <span class="c-comment"># show IP addresses</span>
+<span class="c-cmd">ip</span> route show                  <span class="c-comment"># routing table</span>
+<span class="c-cmd">ifconfig</span>                       <span class="c-comment"># older but still common</span>
+
+<span class="c-comment"># Firewall (Ubuntu/Debian)</span>
+<span class="c-cmd">ufw</span> status
+<span class="c-cmd">ufw</span> allow 80/tcp
+<span class="c-cmd">ufw</span> allow <span class="c-string">'Nginx Full'</span>
+<span class="c-cmd">iptables</span> <span class="c-flag">-L</span>                     <span class="c-comment"># raw firewall rules</span></code></pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════ PRACTICE ══════════════════════════════ -->
+    <section class="section" id="practice">
+      <div class="section-hero">
+        <div class="section-tag">Practice Zone</div>
+        <div class="section-title">Mini Tasks & Challenges</div>
+        <div class="section-desc">Real-world scenarios. Do these before your interviews. No shortcuts.</div>
+      </div>
+
+      <h3>🐧 Linux Challenges</h3>
+      <div class="practice-grid">
+        <div class="practice-card">
+          <div class="practice-card-label" style="color:var(--accent-green)">🟢 Easy</div>
+          <h4>Log Analyzer</h4>
+          <p style="color:var(--text-muted)">Find all ERROR lines in /var/log/syslog, count them, and show the top 5 most recent. Use grep, wc, tail.</p>
+        </div>
+        <div class="practice-card">
+          <div class="practice-card-label" style="color:var(--accent-yellow)">🟡 Medium</div>
+          <h4>Disk Hunter</h4>
+          <p style="color:var(--text-muted)">Find the top 10 largest files on the system (excluding /proc), sorted by size. Use find, sort, head.</p>
+        </div>
+        <div class="practice-card">
+          <div class="practice-card-label" style="color:var(--accent-green)">🟢 Easy</div>
+          <h4>Permission Audit</h4>
+          <p style="color:var(--text-muted)">Find all files in /etc that are world-writable (anyone can write to them). These are security risks.</p>
+        </div>
+        <div class="practice-card">
+          <div class="practice-card-label" style="color:var(--accent-yellow)">🟡 Medium</div>
+          <h4>Process Hunter</h4>
+          <p style="color:var(--text-muted)">Write a one-liner to find the top 5 processes by CPU usage, showing only PID, name, and CPU%.</p>
+        </div>
+      </div>
+
+      <h3>📜 Shell Script Challenges</h3>
+      <div class="practice-grid">
+        <div class="practice-card">
+          <div class="practice-card-label" style="color:var(--accent-green)">🟢 Easy</div>
+          <h4>Backup Script</h4>
+          <p style="color:var(--text-muted)">Write a script that creates a timestamped tar.gz backup of a directory. Accept the source dir as argument. Validate it exists first.</p>
+        </div>
+        <div class="practice-card">
+          <div class="practice-card-label" style="color:var(--accent-yellow)">🟡 Medium</div>
+          <h4>Multi-Server Deploy</h4>
+          <p style="color:var(--text-muted)">Script that reads a servers.txt file and SSH-deploys a new Docker image to each server. Handle failures gracefully.</p>
+        </div>
+        <div class="practice-card">
+          <div class="practice-card-label" style="color:var(--accent-red)">🔴 Hard</div>
+          <h4>Log Rotation</h4>
+          <p style="color:var(--text-muted)">Write a script that: compresses logs older than 7 days, deletes logs older than 30 days, and sends a summary email.</p>
+        </div>
+        <div class="practice-card">
+          <div class="practice-card-label" style="color:var(--accent-yellow)">🟡 Medium</div>
+          <h4>Service Monitor</h4>
+          <p style="color:var(--text-muted)">Script with a loop: every 60 seconds, check if nginx is running. If not, restart it and log the event with timestamp.</p>
+        </div>
+      </div>
+
+      <h3>🚀 Real-World Scenarios</h3>
+      <div class="practice-grid">
+        <div class="practice-card">
+          <div class="practice-card-label" style="color:var(--accent-purple)">🟣 Scenario</div>
+          <h4>Production is Down</h4>
+          <p style="color:var(--text-muted)">The web app is returning 502. Walk through your debugging steps: check nginx, app service, ports, disk, logs. Write the commands you'd run in order.</p>
+        </div>
+        <div class="practice-card">
+          <div class="practice-card-label" style="color:var(--accent-purple)">🟣 Scenario</div>
+          <h4>Disk is 95% Full</h4>
+          <p style="color:var(--text-muted)">Server disk is almost full. Find what's eating space, safely clean up logs, and set up log rotation to prevent recurrence.</p>
+        </div>
+      </div>
+
+      <div class="callout info">
+        <div class="callout-icon">💡</div>
+        <div class="callout-content">
+          <div class="callout-title">Approach for All Challenges</div>
+          Write the script in a file, not just in your head. Test each command individually first. Add <strong>set -euo pipefail</strong> and error messages. A working script with good error handling beats a "clever" broken one every time.
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════ MISTAKES ══════════════════════════════ -->
+    <section class="section" id="mistakes">
+      <div class="section-hero">
+        <div class="section-tag">Avoid These</div>
+        <div class="section-title">Beginner Mistakes</div>
+        <div class="section-desc">The actual mistakes that have caused production outages. Learn them before you make them.</div>
+      </div>
+
+      <div class="mistake-item">
+        <div class="mistake-icon">❌</div>
+        <div class="mistake-content">
+          <div class="mistake-title">rm -rf with wrong path</div>
+          <div class="mistake-body">Running <code>rm -rf $DIR/</code> where $DIR is empty deletes your current directory. Always validate variables before using in destructive commands: <code>[[ -n "$DIR" ]] || exit 1</code></div>
+        </div>
+      </div>
+
+      <div class="mistake-item">
+        <div class="mistake-icon">❌</div>
+        <div class="mistake-content">
+          <div class="mistake-title">Not quoting variables</div>
+          <div class="mistake-body"><code>cp $FILE /backup/</code> breaks when $FILE has spaces. Always use <code>cp "$FILE" /backup/</code>. This is responsible for countless subtle bugs.</div>
+        </div>
+      </div>
+
+      <div class="mistake-item">
+        <div class="mistake-icon">❌</div>
+        <div class="mistake-content">
+          <div class="mistake-title">No set -euo pipefail</div>
+          <div class="mistake-body">Scripts without error handling continue running after failures, causing cascading disasters. Your deploy script might "succeed" even though it failed halfway through.</div>
+        </div>
+      </div>
+
+      <div class="mistake-item">
+        <div class="mistake-icon">❌</div>
+        <div class="mistake-content">
+          <div class="mistake-title">chmod 777 everything</div>
+          <div class="mistake-body">"It works now!" — yes, and you've just opened a security hole. Use 755 for scripts, 644 for files, 600 for secrets. Think about WHY each file needs what permissions.</div>
+        </div>
+      </div>
+
+      <div class="mistake-item">
+        <div class="mistake-icon">❌</div>
+        <div class="mistake-content">
+          <div class="mistake-title">Hardcoding credentials in scripts</div>
+          <div class="mistake-body"><code>PASSWORD="secret123"</code> in a script pushed to git. Use environment variables or secret management tools. Check git history — deleted secrets can still be found.</div>
+        </div>
+      </div>
+
+      <div class="mistake-item">
+        <div class="mistake-icon">❌</div>
+        <div class="mistake-content">
+          <div class="mistake-title">kill -9 as first resort</div>
+          <div class="mistake-body">SIGKILL doesn't allow cleanup. Databases can corrupt, files can get stuck mid-write. Always try <code>kill PID</code> (SIGTERM) first and wait a few seconds.</div>
+        </div>
+      </div>
+
+      <div class="mistake-item">
+        <div class="mistake-icon">❌</div>
+        <div class="mistake-content">
+          <div class="mistake-title">sed -i without testing first</div>
+          <div class="mistake-body">Running <code>sed -i 's/old/new/g' /etc/nginx/nginx.conf</code> without first running <code>sed 's/old/new/g' /etc/nginx/nginx.conf</code> to preview. Always preview first!</div>
+        </div>
+      </div>
+
+      <div class="mistake-item">
+        <div class="mistake-icon">❌</div>
+        <div class="mistake-content">
+          <div class="mistake-title">Using cat to view huge log files</div>
+          <div class="mistake-body"><code>cat /var/log/huge-app.log</code> on a 2GB file will flood your terminal and may crash your session. Use <code>less</code> or <code>tail -n 100</code>.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════ TRAPS ══════════════════════════════ -->
+    <section class="section" id="traps">
+      <div class="section-hero">
+        <div class="section-tag">Interview Intelligence</div>
+        <div class="section-title">Common Interview Traps</div>
+        <div class="section-desc">Questions designed to catch people who memorized without understanding.</div>
+      </div>
+
+      <div class="trap-item">
+        <div class="trap-icon">🪤</div>
+        <div class="trap-content">
+          <div class="trap-title">"What's the difference between > and >> ?"</div>
+          <div class="trap-body">Expected answer: <code>&gt;</code> overwrites the file (truncates first). <code>&gt;&gt;</code> appends. Trap: people say "redirect vs append" — you need to say OVERWRITE vs append. Follow-up: what happens to the file if you do <code>echo "" &gt; file</code>? (It creates an empty file / wipes it.)</div>
+        </div>
+      </div>
+
+      <div class="trap-item">
+        <div class="trap-icon">🪤</div>
+        <div class="trap-content">
+          <div class="trap-title">"What does 2>&1 mean and does order matter?"</div>
+          <div class="trap-body">Trap: many say "yes order matters" but can't explain why. Answer: redirect stdout first, THEN redirect stderr to wherever stdout now points. <code>cmd &gt; out.log 2&gt;&amp;1</code> is correct. <code>cmd 2&gt;&amp;1 &gt; out.log</code> sends stderr to original stdout (terminal), not the file.</div>
+        </div>
+      </div>
+
+      <div class="trap-item">
+        <div class="trap-icon">🪤</div>
+        <div class="trap-content">
+          <div class="trap-title">"What is $@ vs $* in shell scripts?"</div>
+          <div class="trap-body">Both expand to all arguments. Trap is in quoting: <code>"$@"</code> preserves each argument separately (correct). <code>"$*"</code> merges all args into one string. Use <code>"$@"</code> always when passing args to another command.</div>
+        </div>
+      </div>
+
+      <div class="trap-item">
+        <div class="trap-icon">🪤</div>
+        <div class="trap-content">
+          <div class="trap-title">"chmod 644 vs 755 — when do you use which?"</div>
+          <div class="trap-body">Trap: people guess. Rule: does it need to be EXECUTED? Use 755. Is it just data? Use 644. Secret/key? 600. Directories need execute (x) permission to be entered, so dirs should be 755 or 700, never 644.</div>
+        </div>
+      </div>
+
+      <div class="trap-item">
+        <div class="trap-icon">🪤</div>
+        <div class="trap-content">
+          <div class="trap-title">"What happens when you run a command that fails in a pipeline?"</div>
+          <div class="trap-body">Trap: without <code>set -o pipefail</code>, the pipeline's exit code is the LAST command's exit code. So <code>failing_cmd | echo "done"</code> exits 0 even though it failed! With pipefail, any failure in the pipe counts.</div>
+        </div>
+      </div>
+
+      <div class="trap-item">
+        <div class="trap-icon">🪤</div>
+        <div class="trap-content">
+          <div class="trap-title">"What's the difference between CI and CD?"</div>
+          <div class="trap-body">CI = Continuous Integration (merge + build + test automatically). CD can mean Continuous Delivery (auto-deploy to staging, human approves prod) OR Continuous Deployment (auto-deploys all the way to prod). Clarify which CD when asked.</div>
+        </div>
+      </div>
+
+      <div class="trap-item">
+        <div class="trap-icon">🪤</div>
+        <div class="trap-content">
+          <div class="trap-title">"How do you check if a service is running in a script?"</div>
+          <div class="trap-body">Trap: people say <code>ps aux | grep nginx</code>. Problem: this always finds itself (grep process). Correct answer: <code>systemctl is-active --quiet nginx</code> — clean, no false positives, proper exit code. Or use <code>pgrep -x nginx</code>.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════ INTERVIEW Q&A ══════════════════════════════ -->
+    <section class="section" id="interview">
+      <div class="section-hero">
+        <div class="section-tag">Interview Preparation</div>
+        <div class="section-title">Interview Questions</div>
+        <div class="section-desc">Basic to intermediate DevOps questions with answers. Click to reveal.</div>
+      </div>
+
+      <h3>🐧 Linux Questions</h3>
+
+      <div class="qa-item">
+        <div class="qa-question" onclick="toggleQA(this)">
+          <div class="qa-q-badge">Q</div>
+          <div class="qa-q-text">What does the command <code>chmod 755 script.sh</code> do? Explain each digit.</div>
+          <div class="qa-toggle">▼</div>
+        </div>
+        <div class="qa-answer">
+          <p>chmod 755 sets permissions using octal notation. The digits represent owner, group, and others respectively. 7 = rwx (4+2+1), 5 = r-x (4+0+1), 5 = r-x. So the owner can read, write, and execute; group and others can only read and execute. This is the standard permission for shell scripts that others need to run but not modify.</p>
+        </div>
+      </div>
+
+      <div class="qa-item">
+        <div class="qa-question" onclick="toggleQA(this)">
+          <div class="qa-q-badge">Q</div>
+          <div class="qa-q-text">How do you find all files modified in the last 24 hours in /var/log?</div>
+          <div class="qa-toggle">▼</div>
+        </div>
+        <div class="qa-answer">
+          <p><code>find /var/log -type f -mtime -1</code> — The <code>-mtime -1</code> means "less than 1 day old" (modified in last 24 hours). <code>-type f</code> ensures only files, not directories. You can also use <code>-mmin -60</code> for the last 60 minutes.</p>
+        </div>
+      </div>
+
+      <div class="qa-item">
+        <div class="qa-question" onclick="toggleQA(this)">
+          <div class="qa-q-badge">Q</div>
+          <div class="qa-q-text">What's the difference between a hard link and a soft (symbolic) link?</div>
+          <div class="qa-toggle">▼</div>
+        </div>
+        <div class="qa-answer">
+          <p>A <strong>hard link</strong> points directly to the inode (the actual data on disk). Multiple hard links to the same file all see the same data; deleting one doesn't delete the data until all hard links are gone. They can't span filesystems. A <strong>soft/symlink</strong> is a pointer to a path — if the target is deleted, the symlink breaks. Symlinks can span filesystems and point to directories.</p>
+        </div>
+      </div>
+
+      <div class="qa-item">
+        <div class="qa-question" onclick="toggleQA(this)">
+          <div class="qa-q-badge">Q</div>
+          <div class="qa-q-text">How do you check which process is using port 8080?</div>
+          <div class="qa-toggle">▼</div>
+        </div>
+        <div class="qa-answer">
+          <p><code>ss -tlnp | grep 8080</code> or <code>lsof -i :8080</code>. The <code>ss</code> approach is preferred on modern Linux. It shows the process name and PID directly. <code>lsof</code> is more portable. Either is acceptable in interviews.</p>
+        </div>
+      </div>
+
+      <h3>📜 Shell Scripting Questions</h3>
+
+      <div class="qa-item">
+        <div class="qa-question" onclick="toggleQA(this)">
+          <div class="qa-q-badge">Q</div>
+          <div class="qa-q-text">What does <code>set -euo pipefail</code> do and why should every script have it?</div>
+          <div class="qa-toggle">▼</div>
+        </div>
+        <div class="qa-answer">
+          <p><code>-e</code>: Exit immediately when any command fails (non-zero exit). <code>-u</code>: Treat unset variables as errors (prevents bugs from typos in variable names). <code>-o pipefail</code>: Pipe fails if ANY command in the pipeline fails, not just the last one. Together, they make scripts fail loudly and early rather than silently continuing after errors — critical for deployment and automation scripts.</p>
+        </div>
+      </div>
+
+      <div class="qa-item">
+        <div class="qa-question" onclick="toggleQA(this)">
+          <div class="qa-q-badge">Q</div>
+          <div class="qa-q-text">What's wrong with this code: <code>for file in $(ls /tmp/*.log); do rm $file; done</code>?</div>
+          <div class="qa-toggle">▼</div>
+        </div>
+        <div class="qa-answer">
+          <p>Multiple problems: (1) <code>$(ls ...)</code> output is word-split, so filenames with spaces break. (2) <code>$file</code> is unquoted in rm, causing word splitting issues. (3) It's completely unnecessary — just use <code>rm /tmp/*.log</code> directly (glob expansion). Or if you need to process each file: <code>for file in /tmp/*.log; do rm "$file"; done</code>.</p>
+        </div>
+      </div>
+
+      <div class="qa-item">
+        <div class="qa-question" onclick="toggleQA(this)">
+          <div class="qa-q-badge">Q</div>
+          <div class="qa-q-text">How do you pass arguments to a shell script and validate them?</div>
+          <div class="qa-toggle">▼</div>
+        </div>
+        <div class="qa-answer">
+          <p>Arguments are available as $1, $2, etc. $# is the count. $@ is all arguments. For validation: <code>[[ $# -lt 1 ]] && { echo "Usage: $0 &lt;env&gt;"; exit 1; }</code>. Or use the built-in error form: <code>ENV="${1:?ERROR: environment argument required}"</code> — this exits with the error message if $1 is empty or unset.</p>
+        </div>
+      </div>
+
+      <h3>🚀 DevOps Conceptual Questions</h3>
+
+      <div class="qa-item">
+        <div class="qa-question" onclick="toggleQA(this)">
+          <div class="qa-q-badge">Q</div>
+          <div class="qa-q-text">Explain CI/CD in simple terms. What's the practical benefit?</div>
+          <div class="qa-toggle">▼</div>
+        </div>
+        <div class="qa-answer">
+          <p>CI/CD is an automated pipeline: developer pushes code → CI server automatically builds and tests it → if tests pass, CD automatically deploys it. Practical benefits: bugs caught early (in dev, not production), faster release cycles (deploy multiple times per day vs once per month), consistent deployments (no "works on my machine"), and easy rollbacks. The key insight: frequent small changes are less risky than rare large changes.</p>
+        </div>
+      </div>
+
+      <div class="qa-item">
+        <div class="qa-question" onclick="toggleQA(this)">
+          <div class="qa-q-badge">Q</div>
+          <div class="qa-q-text">What's the difference between a container and a virtual machine?</div>
+          <div class="qa-toggle">▼</div>
+        </div>
+        <div class="qa-answer">
+          <p>A VM runs a full OS (kernel + userspace) on virtualized hardware — takes minutes to start, uses GBs of memory. A container shares the host OS kernel, only packaging the application and its dependencies — starts in seconds, uses MBs. Containers are more efficient but share the kernel (slightly less isolated). VMs are fully isolated with their own kernel. In practice: containers for most microservices, VMs for stronger isolation requirements.</p>
+        </div>
+      </div>
+
+      <div class="qa-item">
+        <div class="qa-question" onclick="toggleQA(this)">
+          <div class="qa-q-badge">Q</div>
+          <div class="qa-q-text">Scenario: Production deploy fails and the site is down. What do you do first?</div>
+          <div class="qa-toggle">▼</div>
+        </div>
+        <div class="qa-answer">
+          <p><strong>Step 1: Restore service (rollback first, investigate second).</strong> Rollback to last working version immediately — every minute of downtime has business cost. Then: check service status (systemctl status), check logs (journalctl -u appname -n 50), check disk/memory, check if config changed. Once stable, do a postmortem on what went wrong and fix forward. Key principle: never investigate on a live broken system — restore first.</p>
+        </div>
+      </div>
+
+      <div class="qa-item">
+        <div class="qa-question" onclick="toggleQA(this)">
+          <div class="qa-q-badge">Q</div>
+          <div class="qa-q-text">What is Infrastructure as Code and why does it matter?</div>
+          <div class="qa-toggle">▼</div>
+        </div>
+        <div class="qa-answer">
+          <p>IaC means defining infrastructure (servers, networks, databases) in code files (Terraform, CloudFormation, Ansible) rather than clicking through a GUI. Benefits: version-controlled (git history of every infrastructure change), reproducible (spin up identical environments), reviewable (code review for infrastructure changes), automated (no manual steps = fewer errors). It makes infrastructure auditable, testable, and recoverable — if a region fails, you can recreate it from code.</p>
+        </div>
+      </div>
+
+      <div class="qa-item">
+        <div class="qa-question" onclick="toggleQA(this)">
+          <div class="qa-q-badge">Q</div>
+          <div class="qa-q-text">How do you securely handle secrets (passwords, API keys) in shell scripts?</div>
+          <div class="qa-toggle">▼</div>
+        </div>
+        <div class="qa-answer">
+          <p>Never hardcode secrets in scripts. Options in order of preference: (1) Environment variables from a secrets manager (AWS Secrets Manager, HashiCorp Vault). (2) Files with strict permissions (600) that are NOT in version control — reference them with <code>source .env</code>. (3) CI/CD secret variables (GitHub Secrets, GitLab CI variables) — these are injected at runtime, never stored in code. Always add .env to .gitignore. Audit git history if secrets were ever committed — they need to be rotated.</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+  // ── NAVIGATION ──
+  function navigate(sectionId) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    const target = document.getElementById(sectionId);
+    if (target) {
+      target.classList.add('active');
+      window.scrollTo(0, 0);
+    }
+    const navItem = document.querySelector(`[data-section="${sectionId}"]`);
+    if (navItem) navItem.classList.add('active');
+    closeSidebar();
+  }
+
+  document.querySelectorAll('.nav-item').forEach(item => {
+    item.addEventListener('click', () => navigate(item.dataset.section));
+  });
+
+  // ── TOPIC ACCORDION ──
+  function toggleTopic(header) {
+    const block = header.closest('.topic-block');
+    block.classList.toggle('open');
+  }
+
+  // ── QA ACCORDION ──
+  function toggleQA(question) {
+    const item = question.closest('.qa-item');
+    item.classList.toggle('open');
+  }
+
+  // ── COPY CODE ──
+  function copyCode(btn) {
+    const pre = btn.closest('.code-block').querySelector('pre');
+    const text = pre.innerText;
+    navigator.clipboard.writeText(text).then(() => {
+      btn.textContent = 'copied!';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = 'copy'; btn.classList.remove('copied'); }, 2000);
+    });
+  }
+
+  // ── HAMBURGER / SIDEBAR ──
+  const hamburgerBtn = document.getElementById('hamburgerBtn');
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('sidebarOverlay');
+
+  hamburgerBtn.addEventListener('click', () => {
+    sidebar.classList.toggle('open');
+    overlay.classList.toggle('show');
+  });
+  overlay.addEventListener('click', closeSidebar);
+
+  function closeSidebar() {
+    sidebar.classList.remove('open');
+    overlay.classList.remove('show');
+  }
+
+  // ── SCROLL PROGRESS ──
+  window.addEventListener('scroll', () => {
+    const scrollTop = document.documentElement.scrollTop;
+    const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const fill = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+    document.getElementById('progressFill').style.width = fill + '%';
+  });
+
+  // Open all topic blocks on home initially
+  navigate('home');
+</script>
+</body>
+</html>
