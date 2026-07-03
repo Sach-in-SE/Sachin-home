@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Microsoft Learn Student Resource Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #050810;
+    --bg-2: #080c18;
+    --bg-card: #0c1120;
+    --bg-card-hover: #101628;
+    --border: rgba(255,255,255,0.07);
+    --border-hover: rgba(66,153,225,0.35);
+    --text: #e8edf5;
+    --text-dim: #6b7a99;
+    --text-mid: #9aa5bf;
+    --ms-blue: #0078D4;
+    --ms-blue-light: #2899FF;
+    --emerald: #10B981;
+    --emerald-light: #34D399;
+    --purple: #8B5CF6;
+    --amber: #F59E0B;
+    --rose: #F43F5E;
+    --cyan: #06B6D4;
+    --glow-blue: rgba(0,120,212,0.18);
+    --glow-emerald: rgba(16,185,129,0.15);
+    --font-display: 'Space Grotesk', sans-serif;
+    --font-body: 'Inter', sans-serif;
+    --radius: 14px;
+    --radius-sm: 8px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 15px;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* ─── NOISE TEXTURE ─── */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.4;
+  }
+
+  /* ─── AMBIENT GLOWS ─── */
+  .ambient {
+    position: fixed;
+    pointer-events: none;
+    border-radius: 50%;
+    filter: blur(120px);
+    z-index: 0;
+  }
+  .ambient-1 {
+    width: 600px; height: 600px;
+    background: var(--glow-blue);
+    top: -200px; left: -100px;
+  }
+  .ambient-2 {
+    width: 500px; height: 500px;
+    background: var(--glow-emerald);
+    bottom: 10%; right: -150px;
+  }
+
+  /* ─── HEADER ─── */
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    background: rgba(5,8,16,0.82);
+    border-bottom: 1px solid var(--border);
+  }
+  .header-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 24px;
+    height: 62px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+  }
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    flex-shrink: 0;
+  }
+  .logo-icon {
+    width: 30px; height: 30px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3px;
+  }
+  .logo-icon span {
+    border-radius: 2px;
+  }
+  .logo-icon span:nth-child(1) { background: #F25022; }
+  .logo-icon span:nth-child(2) { background: #7FBA00; }
+  .logo-icon span:nth-child(3) { background: #00A4EF; }
+  .logo-icon span:nth-child(4) { background: #FFB900; }
+  .logo-text {
+    font-family: var(--font-display);
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+    letter-spacing: -0.2px;
+  }
+  .logo-text span { color: var(--ms-blue-light); }
+
+  nav {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  nav a {
+    font-size: 13.5px;
+    font-weight: 500;
+    color: var(--text-dim);
+    text-decoration: none;
+    padding: 7px 14px;
+    border-radius: 100px;
+    transition: color 0.15s, background 0.15s;
+    white-space: nowrap;
+  }
+  nav a:hover { color: var(--text); background: rgba(255,255,255,0.05); }
+  nav a.active { color: var(--ms-blue-light); }
+
+  /* ─── HERO ─── */
+  .hero {
+    position: relative;
+    z-index: 1;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 88px 24px 72px;
+    text-align: center;
+  }
+  .hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--ms-blue-light);
+    border: 1px solid rgba(40,153,255,0.25);
+    background: rgba(40,153,255,0.06);
+    padding: 6px 14px;
+    border-radius: 100px;
+    margin-bottom: 28px;
+  }
+  .hero-title {
+    font-family: var(--font-display);
+    font-size: clamp(32px, 5vw, 56px);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -1px;
+    margin-bottom: 20px;
+    color: #fff;
+  }
+  .hero-title .highlight-blue {
+    background: linear-gradient(90deg, var(--ms-blue-light), #60c0ff);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .hero-title .highlight-green {
+    background: linear-gradient(90deg, var(--emerald), var(--emerald-light));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .hero-sub {
+    font-size: 17px;
+    color: var(--text-mid);
+    max-width: 580px;
+    margin: 0 auto 40px;
+    line-height: 1.7;
+  }
+  .hero-stats {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    flex-wrap: wrap;
+  }
+  .stat {
+    text-align: center;
+  }
+  .stat-num {
+    font-family: var(--font-display);
+    font-size: 26px;
+    font-weight: 700;
+    color: #fff;
+  }
+  .stat-num span { color: var(--ms-blue-light); }
+  .stat-label {
+    font-size: 12px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-top: 2px;
+  }
+
+  /* ─── SEARCH + FILTER BAR ─── */
+  .toolbar {
+    position: relative;
+    z-index: 1;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 24px 40px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .search-wrap {
+    flex: 1;
+    min-width: 220px;
+    position: relative;
+  }
+  .search-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-dim);
+    pointer-events: none;
+    font-size: 16px;
+  }
+  #searchInput {
+    width: 100%;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 14px;
+    padding: 11px 14px 11px 40px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  #searchInput::placeholder { color: var(--text-dim); }
+  #searchInput:focus {
+    border-color: rgba(40,153,255,0.4);
+    box-shadow: 0 0 0 3px rgba(40,153,255,0.08);
+  }
+  .filter-tags {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .filter-tag {
+    font-size: 12.5px;
+    font-weight: 500;
+    padding: 7px 14px;
+    border-radius: 100px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text-dim);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .filter-tag:hover { border-color: rgba(255,255,255,0.15); color: var(--text); }
+  .filter-tag.active {
+    background: rgba(40,153,255,0.1);
+    border-color: rgba(40,153,255,0.35);
+    color: var(--ms-blue-light);
+  }
+
+  /* ─── SECTION ─── */
+  .section {
+    position: relative;
+    z-index: 1;
+    max-width: 1280px;
+    margin: 0 auto 72px;
+    padding: 0 24px;
+  }
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+  .section-badge {
+    font-family: var(--font-display);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    padding: 5px 13px;
+    border-radius: 100px;
+  }
+  .badge-beginner {
+    background: rgba(16,185,129,0.12);
+    color: var(--emerald-light);
+    border: 1px solid rgba(16,185,129,0.25);
+  }
+  .badge-intermediate {
+    background: rgba(139,92,246,0.12);
+    color: #a78bfa;
+    border: 1px solid rgba(139,92,246,0.25);
+  }
+  .badge-expert {
+    background: rgba(244,63,94,0.10);
+    color: #fb7185;
+    border: 1px solid rgba(244,63,94,0.22);
+  }
+  .section-title {
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: -0.3px;
+  }
+  .section-divider {
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+  .section-count {
+    font-size: 13px;
+    color: var(--text-dim);
+    white-space: nowrap;
+  }
+
+  /* ─── GRID ─── */
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+  @media (max-width: 1100px) { .cards-grid { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 760px)  { .cards-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 520px)  { .cards-grid { grid-template-columns: 1fr; } }
+
+  /* ─── CARD ─── */
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease, background 0.22s ease;
+    cursor: default;
+  }
+  .card:hover {
+    transform: translateY(-4px);
+    border-color: var(--border-hover);
+    background: var(--bg-card-hover);
+    box-shadow: 0 0 0 1px rgba(40,153,255,0.1), 0 20px 40px -12px rgba(0,0,0,0.5), 0 0 30px -10px rgba(40,153,255,0.15);
+  }
+  .card-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  .domain-badge {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    padding: 4px 10px;
+    border-radius: 6px;
+    flex-shrink: 0;
+  }
+  .domain-cloud      { background: rgba(0,120,212,0.15); color: #5bb8ff; border: 1px solid rgba(0,120,212,0.25); }
+  .domain-ai         { background: rgba(139,92,246,0.15); color: #c4b5fd; border: 1px solid rgba(139,92,246,0.25); }
+  .domain-devops     { background: rgba(16,185,129,0.15); color: #6ee7b7; border: 1px solid rgba(16,185,129,0.25); }
+  .domain-data       { background: rgba(245,158,11,0.15); color: #fcd34d; border: 1px solid rgba(245,158,11,0.25); }
+  .domain-security   { background: rgba(244,63,94,0.15); color: #fca5a5; border: 1px solid rgba(244,63,94,0.25); }
+  .domain-dev        { background: rgba(6,182,212,0.15); color: #67e8f9; border: 1px solid rgba(6,182,212,0.25); }
+  .domain-platform   { background: rgba(251,191,36,0.12); color: #fde68a; border: 1px solid rgba(251,191,36,0.2); }
+  .domain-linux      { background: rgba(161,161,170,0.12); color: #d4d4d8; border: 1px solid rgba(161,161,170,0.2); }
+
+  .time-badge {
+    font-size: 11.5px;
+    color: var(--text-dim);
+    white-space: nowrap;
+  }
+  .card-title {
+    font-family: var(--font-display);
+    font-size: 14.5px;
+    font-weight: 600;
+    color: #fff;
+    line-height: 1.4;
+    letter-spacing: -0.1px;
+  }
+  .card-desc {
+    font-size: 13px;
+    color: var(--text-mid);
+    line-height: 1.65;
+    flex: 1;
+  }
+  .card-cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 10px 18px;
+    background: rgba(0,120,212,0.12);
+    border: 1px solid rgba(0,120,212,0.28);
+    border-radius: var(--radius-sm);
+    color: var(--ms-blue-light);
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background 0.15s, border-color 0.15s, box-shadow 0.15s;
+    margin-top: auto;
+  }
+  .card-cta:hover {
+    background: rgba(0,120,212,0.22);
+    border-color: rgba(40,153,255,0.5);
+    box-shadow: 0 0 16px -4px rgba(40,153,255,0.3);
+  }
+
+  /* ─── EMPTY STATE ─── */
+  .empty-state {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-dim);
+    font-size: 14px;
+  }
+  .empty-state strong { color: var(--text-mid); display: block; font-size: 16px; margin-bottom: 6px; }
+
+  /* ─── FOOTER ─── */
+  footer {
+    position: relative;
+    z-index: 1;
+    border-top: 1px solid var(--border);
+    padding: 32px 24px;
+    text-align: center;
+    font-size: 13px;
+    color: var(--text-dim);
+  }
+  footer a { color: var(--ms-blue-light); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+
+  /* ─── MOBILE NAV ─── */
+  @media (max-width: 640px) {
+    nav { display: none; }
+    .hero { padding: 56px 20px 48px; }
+    .hero-stats { gap: 24px; }
+  }
+
+  /* ─── HIDDEN CARD ─── */
+  .card.hidden { display: none; }
+
+  /* ─── SCROLL REVEAL ─── */
+  .card { opacity: 0; transform: translateY(16px); animation: fadeUp 0.4s ease forwards; }
+  @keyframes fadeUp {
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .card:nth-child(1)  { animation-delay: 0.04s; }
+  .card:nth-child(2)  { animation-delay: 0.08s; }
+  .card:nth-child(3)  { animation-delay: 0.12s; }
+  .card:nth-child(4)  { animation-delay: 0.16s; }
+  .card:nth-child(5)  { animation-delay: 0.20s; }
+  .card:nth-child(6)  { animation-delay: 0.24s; }
+  .card:nth-child(7)  { animation-delay: 0.28s; }
+  .card:nth-child(8)  { animation-delay: 0.32s; }
+</style>
+</head>
+<body>
+
+<div class="ambient ambient-1"></div>
+<div class="ambient ambient-2"></div>
+
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <a href="#" class="logo">
+      <div class="logo-icon">
+        <span></span><span></span><span></span><span></span>
+      </div>
+      <span class="logo-text">Microsoft Learn <span>Student Hub</span></span>
+    </a>
+    <nav>
+      <a href="#beginner">Beginner</a>
+      <a href="#intermediate">Intermediate</a>
+      <a href="#expert">Expert</a>
+    </nav>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-eyebrow">🎓 Student Resource Hub · Free Sandbox Labs Included</div>
+  <h1 class="hero-title">
+    Master <span class="highlight-blue">Microsoft Azure</span><br>
+    &amp; <span class="highlight-green">AI Skills</span> that get you hired
+  </h1>
+  <p class="hero-sub">
+    Curated Microsoft Learn tracks with free sandbox labs and certification prep — handpicked for students who want to build real careers in cloud, AI, and DevOps.
+  </p>
+  <div class="hero-stats">
+    <div class="stat"><div class="stat-num">24<span>+</span></div><div class="stat-label">Courses</div></div>
+    <div class="stat"><div class="stat-num">3</div><div class="stat-label">Skill Tracks</div></div>
+    <div class="stat"><div class="stat-num">100<span>%</span></div><div class="stat-label">Free &amp; Sandbox</div></div>
+    <div class="stat"><div class="stat-num">12<span>+</span></div><div class="stat-label">Certifications</div></div>
+  </div>
+</section>
+
+<!-- TOOLBAR -->
+<div class="toolbar">
+  <div class="search-wrap">
+    <span class="search-icon">🔍</span>
+    <input type="text" id="searchInput" placeholder="Search courses by title or domain…" autocomplete="off">
+  </div>
+  <div class="filter-tags">
+    <button class="filter-tag active" data-filter="all">All</button>
+    <button class="filter-tag" data-filter="Cloud">Cloud</button>
+    <button class="filter-tag" data-filter="AI/ML">AI / ML</button>
+    <button class="filter-tag" data-filter="DevOps">DevOps</button>
+    <button class="filter-tag" data-filter="Data">Data</button>
+    <button class="filter-tag" data-filter="Security">Security</button>
+    <button class="filter-tag" data-filter="Dev">Dev</button>
+  </div>
+</div>
+
+<!-- ===== BEGINNER SECTION ===== -->
+<section class="section" id="beginner">
+  <div class="section-header">
+    <span class="section-badge badge-beginner">Beginner</span>
+    <h2 class="section-title">Foundations &amp; Core Skills</h2>
+    <div class="section-divider"></div>
+    <span class="section-count">8 courses</span>
+  </div>
+  <div class="cards-grid" id="grid-beginner">
+
+    <div class="card" data-title="AZ-900: Microsoft Azure Fundamentals" data-domain="Cloud">
+      <div class="card-top">
+        <span class="domain-badge domain-cloud">Cloud</span>
+        <span class="time-badge">⏱️ 5.5 hrs</span>
+      </div>
+      <div class="card-title">AZ-900: Microsoft Azure Fundamentals</div>
+      <div class="card-desc">Learn core cloud concepts, Azure services, and pricing models. Your first step toward any Azure certification pathway.</div>
+      <a href="#" class="card-cta">Start Learning 🚀</a>
+    </div>
+
+    <div class="card" data-title="GitHub Foundations & Version Control" data-domain="Dev">
+      <div class="card-top">
+        <span class="domain-badge domain-dev">Dev</span>
+        <span class="time-badge">⏱️ 3.5 hrs</span>
+      </div>
+      <div class="card-title">GitHub Foundations &amp; Version Control</div>
+      <div class="card-desc">Master Git workflows, pull requests, branching strategies, and GitHub collaboration — skills every developer needs from day one.</div>
+      <a href="#" class="card-cta">Start Learning 🚀</a>
+    </div>
+
+    <div class="card" data-title="Introduction to Python for Data Analysis" data-domain="Data">
+      <div class="card-top">
+        <span class="domain-badge domain-data">Data</span>
+        <span class="time-badge">⏱️ 4 hrs</span>
+      </div>
+      <div class="card-title">Introduction to Python for Data Analysis</div>
+      <div class="card-desc">Write Python scripts to clean, transform, and visualise datasets using pandas and matplotlib — no prior experience required.</div>
+      <a href="#" class="card-cta">Start Learning 🚀</a>
+    </div>
+
+    <div class="card" data-title="Web Development Fundamentals" data-domain="Dev">
+      <div class="card-top">
+        <span class="domain-badge domain-dev">Dev</span>
+        <span class="time-badge">⏱️ 6 hrs</span>
+      </div>
+      <div class="card-title">Web Development Fundamentals (HTML, CSS, JS)</div>
+      <div class="card-desc">Build and style responsive web pages from scratch. Learn semantic HTML, Flexbox/Grid layouts, and interactive JavaScript DOM manipulation.</div>
+      <a href="#" class="card-cta">Start Learning 🚀</a>
+    </div>
+
+    <div class="card" data-title="PL-900: Microsoft Power Platform Fundamentals" data-domain="Platform">
+      <div class="card-top">
+        <span class="domain-badge domain-platform">Platform</span>
+        <span class="time-badge">⏱️ 4 hrs</span>
+      </div>
+      <div class="card-title">PL-900: Microsoft Power Platform Fundamentals</div>
+      <div class="card-desc">Discover how Power Apps, Power Automate, Power BI, and Power Virtual Agents help organisations build low-code solutions fast.</div>
+      <a href="#" class="card-cta">Start Learning 🚀</a>
+    </div>
+
+    <div class="card" data-title="SC-900: Microsoft Security, Compliance, and Identity Fundamentals" data-domain="Security">
+      <div class="card-top">
+        <span class="domain-badge domain-security">Security</span>
+        <span class="time-badge">⏱️ 3.5 hrs</span>
+      </div>
+      <div class="card-title">SC-900: Security, Compliance &amp; Identity Fundamentals</div>
+      <div class="card-desc">Understand core security concepts, Microsoft Entra ID, and cloud compliance frameworks. Ideal prep for any security career track.</div>
+      <a href="#" class="card-cta">Start Learning 🚀</a>
+    </div>
+
+    <div class="card" data-title="Introduction to Linux on Azure" data-domain="Linux">
+      <div class="card-top">
+        <span class="domain-badge domain-linux">Linux</span>
+        <span class="time-badge">⏱️ 4.5 hrs</span>
+      </div>
+      <div class="card-title">Introduction to Linux on Azure</div>
+      <div class="card-desc">Learn Linux command-line essentials, file system navigation, permissions, and how to deploy and manage Linux VMs on Azure.</div>
+      <a href="#" class="card-cta">Start Learning 🚀</a>
+    </div>
+
+    <div class="card" data-title="Getting Started with Git and GitHub" data-domain="Dev">
+      <div class="card-top">
+        <span class="domain-badge domain-dev">Dev</span>
+        <span class="time-badge">⏱️ 2.5 hrs</span>
+      </div>
+      <div class="card-title">Getting Started with Git and GitHub</div>
+      <div class="card-desc">Set up Git, commit your first repo, navigate branches, and resolve merge conflicts — the workflow you'll use every single day as a developer.</div>
+      <a href="#" class="card-cta">Start Learning 🚀</a>
+    </div>
+
+  </div>
+</section>
+
+<!-- ===== INTERMEDIATE SECTION ===== -->
+<section class="section" id="intermediate">
+  <div class="section-header">
+    <span class="section-badge badge-intermediate">Intermediate</span>
+    <h2 class="section-title">Specialisation &amp; Associate Certifications</h2>
+    <div class="section-divider"></div>
+    <span class="section-count">8 courses</span>
+  </div>
+  <div class="cards-grid" id="grid-intermediate">
+
+    <div class="card" data-title="AI-900: Microsoft Azure AI Fundamentals" data-domain="AI/ML">
+      <div class="card-top">
+        <span class="domain-badge domain-ai">AI/ML</span>
+        <span class="time-badge">⏱️ 4 hrs</span>
+      </div>
+      <div class="card-title">AI-900: Microsoft Azure AI Fundamentals</div>
+      <div class="card-desc">Explore how Azure AI services like Vision, Language, and Bot Service work — no ML degree required, just curiosity and cloud basics.</div>
+      <a href="#" class="card-cta">Start Learning 🚀</a>
+    </div>
+
+    <div class="card" data-title="DP-900: Microsoft Azure Data Fundamentals" data-domain="Data">
+      <div class="card-top">
+        <span class="domain-badge domain-data">Data</span>
+        <span class="time-badge">⏱️ 3.5 hrs</span>
+      </div>
+      <div class="card-title">DP-900: Microsoft Azure Data Fundamentals</div>
+      <div class="card-desc">Understand relational and non-relational data, data analytics workloads, and how Azure Synapse and Cosmos DB handle real-world data at scale.</div>
+      <a href="#" class="card-cta">Start Learning 🚀</a>
+    </div>
+
+    <div class="card" data-title="AZ-104: Microsoft Azure Administrator" data-domain="Cloud">
+      <div class="card-top">
+        <span class="domain-badge domain-cloud">Cloud</span>
+        <span class="time-badge">⏱️ 9 hrs</span>
+      </div>
+      <div class="card-title">AZ-104: Microsoft Azure Administrator</div>
+      <div class="card-desc">Manage Azure identities, virtual networks, storage accounts, and compute resources. The core associate certification for cloud operations roles.</div>
+      <a href="#" class="card-cta">Start Learning 🚀</a>
+    </div>
+
+    <div class="card" data-title="Developing Solutions for Microsoft Azure Intermediate" data-domain="Dev">
+      <div class="card-top">
+        <span class="domain-badge domain-dev">Dev</span>
+        <span class="time-badge">⏱️ 6 hrs</span>
+      </div>
+      <div class="card-title">Developing Solutions for Azure (Intermediate Intro)</div>
+      <div class="card-desc">Build serverless functions, API Management endpoints, and Azure-connected apps — building blocks for the AZ-204 developer certification.</div>
+      <a href="#" class="card-cta">Start Learning 🚀</a>
+    </div>
+
+    <div class="card" data-title="Building Web Apps with React and Azure Web Services" data-domain="Dev">
+      <div class="card-top">
+        <span class="domain-badge domain-dev">Dev</span>
+        <span class="time-badge">⏱️ 5 hrs</span>
+      </div>
+      <div class="card-title">Building Web Apps with React &amp; Azure Web Services</div>
+      <div class="card-desc">Create and deploy production React applications to Azure Static Web Apps and App Service with CI/CD pipelines from GitHub Actions.</div>
+      <a href="#" class="card-cta">Start Learning 🚀</a>
+    </div>
+
+    <div class="card" data-title="Introduction to DevOps and CI/CD Pipelines" data-domain="DevOps">
+      <div class="card-top">
+        <span class="domain-badge domain-devops">DevOps</span>
+        <span class="time-badge">⏱️ 5.5 hrs</span>
+      </div>
+      <div class="card-title">Introduction to DevOps and CI/CD Pipelines</div>
+      <div class="card-desc">Learn the DevOps lifecycle: plan, build, test, release, and monitor. Set up Azure Pipelines and GitHub Actions workflows with sandbox labs.</div>
+      <a href="#" class="card-cta">Start Learning 🚀</a>
+    </div>
+
+    <div class="card" data-title="Data Engineering Foundations on Azure" data-domain="Data">
+      <div class="card-top">
+        <span class="domain-badge domain-data">Data</span>
+        <span class="time-badge">⏱️ 7 hrs</span>
+      </div>
+      <div class="card-title">Data Engineering Foundations on Azure</div>
+      <div class="card-desc">Design and build data pipelines using Azure Data Factory, ingest streaming data with Event Hubs, and store it efficiently in Azure Data Lake.</div>
+      <a href="#" class="card-cta">Start Learning 🚀</a>
+    </div>
+
+    <div class="card" data-title="Implementing Secure Solutions on Cloud" data-domain="Security">
+      <div class="card-top">
+        <span class="domain-badge domain-security">Security</span>
+        <span class="time-badge">⏱️ 5 hrs</span>
+      </div>
+      <div class="card-title">Implementing Secure Solutions on Cloud</div>
+      <div class="card-desc">Apply zero-trust principles, configure Azure Key Vault, set up RBAC policies, and protect cloud workloads with Microsoft Defender for Cloud.</div>
+      <a href="#" class="card-cta">Start Learning 🚀</a>
+    </div>
+
+  </div>
+</section>
+
+<!-- ===== EXPERT SECTION ===== -->
+<section class="section" id="expert">
+  <div class="section-header">
+    <span class="section-badge badge-expert">Expert</span>
+    <h2 class="section-title">Advanced Architecture &amp; Engineering</h2>
+    <div class="section-divider"></div>
+    <span class="section-count">8 courses</span>
+  </div>
+  <div class="cards-grid" id="grid-expert">
+
+    <div class="card" data-title="AZ-204: Developing Solutions for Microsoft Azure Advanced" data-domain="Dev">
+      <div class="card-top">
+        <span class="domain-badge domain-dev">Dev</span>
+        <span class="time-badge">⏱️ 12 hrs</span>
+      </div>
+      <div class="card-title">AZ-204: Developing Solutions for Azure (Advanced)</div>
+      <div class="card-desc">Implement containerised solutions, Azure CDN, Blob storage lifecycle, and integrate Cosmos DB into scalable cloud-native applications.</div>
+      <a href="#" class="card-cta">Start Learning 🚀</a>
+    </div>
+
+    <div class="card" data-title="AI-102: Designing and Implementing a Microsoft Azure AI Solution" data-domain="AI/ML">
+      <div class="card-top">
+        <span class="domain-badge domain-ai">AI/ML</span>
+        <span class="time-badge">⏱️ 11 hrs</span>
+      </div>
+      <div class="card-title">AI-102: Designing &amp; Implementing Azure AI Solutions</div>
+      <div class="card-desc">Build and deploy end-to-end AI solutions using Azure OpenAI, Cognitive Services, Bot Framework, and Azure Machine Learning pipelines.</div>
+      <a href="#" class="card-cta">Start Learning 🚀</a>
+    </div>
+
+    <div class="card" data-title="AZ-400: Designing and Implementing Microsoft DevOps Solutions" data-domain="DevOps">
+      <div class="card-top">
+        <span class="domain-badge domain-devops">DevOps</span>
+        <span class="time-badge">⏱️ 13 hrs</span>
+      </div>
+      <div class="card-title">AZ-400: Designing &amp; Implementing DevOps Solutions</div>
+      <div class="card-desc">Architect enterprise DevOps strategies: SRE principles, infrastructure-as-code, release management, and advanced monitoring with Azure Monitor.</div>
+      <a href="#" class="card-cta">Start Learning 🚀</a>
+    </div>
+
+    <div class="card" data-title="DP-203: Data Engineering on Microsoft Azure" data-domain="Data">
+      <div class="card-top">
+        <span class="domain-badge domain-data">Data</span>
+        <span class="time-badge">⏱️ 10 hrs</span>
+      </div>
+      <div class="card-title">DP-203: Data Engineering on Microsoft Azure</div>
+      <div class="card-desc">Design batch and streaming data solutions using Azure Synapse Analytics, Databricks, and Spark — the expert-level data engineering certification.</div>
+      <a href="#" class="card-cta">Start Learning 🚀</a>
+    </div>
+
+    <div class="card" data-title="AZ-305: Designing Microsoft Azure Infrastructure Solutions" data-domain="Cloud">
+      <div class="card-top">
+        <span class="domain-badge domain-cloud">Cloud</span>
+        <span class="time-badge">⏱️ 11 hrs</span>
+      </div>
+      <div class="card-title">AZ-305: Designing Azure Infrastructure Solutions</div>
+      <div class="card-desc">Architect highly available, resilient, and cost-optimised Azure environments — the definitive cloud architecture certification for senior engineers.</div>
+      <a href="#" class="card-cta">Start Learning 🚀</a>
+    </div>
+
+    <div class="card" data-title="Advanced Cloud Architecture and Microservices" data-domain="Cloud">
+      <div class="card-top">
+        <span class="domain-badge domain-cloud">Cloud</span>
+        <span class="time-badge">⏱️ 9 hrs</span>
+      </div>
+      <div class="card-title">Advanced Cloud Architecture &amp; Microservices</div>
+      <div class="card-desc">Design domain-driven microservices with event-driven patterns, deploy to AKS, and implement service meshes with Azure API Management at scale.</div>
+      <a href="#" class="card-cta">Start Learning 🚀</a>
+    </div>
+
+    <div class="card" data-title="Security Operations Analyst SC-200 Expert Track" data-domain="Security">
+      <div class="card-top">
+        <span class="domain-badge domain-security">Security</span>
+        <span class="time-badge">⏱️ 10 hrs</span>
+      </div>
+      <div class="card-title">SC-200: Security Operations Analyst Expert Track</div>
+      <div class="card-desc">Detect, investigate, and remediate threats using Microsoft Sentinel SIEM/SOAR, Defender XDR, and KQL for advanced threat hunting queries.</div>
+      <a href="#" class="card-cta">Start Learning 🚀</a>
+    </div>
+
+    <div class="card" data-title="Enterprise-Scale Machine Learning Lifecycle MLOps" data-domain="AI/ML">
+      <div class="card-top">
+        <span class="domain-badge domain-ai">AI/ML</span>
+        <span class="time-badge">⏱️ 12 hrs</span>
+      </div>
+      <div class="card-title">Enterprise-Scale ML Lifecycle (MLOps)</div>
+      <div class="card-desc">Operationalise machine learning at scale: automate training pipelines, deploy models to Azure ML endpoints, and monitor drift in production environments.</div>
+      <a href="#" class="card-cta">Start Learning 🚀</a>
+    </div>
+
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>Built for student communities · Content sourced from <a href="https://learn.microsoft.com" target="_blank" rel="noopener">Microsoft Learn</a> · All courses are free with sandbox labs</p>
+</footer>
+
+<script>
+  // ─── SEARCH + DOMAIN FILTER ───
+  const searchInput = document.getElementById('searchInput');
+  const filterTags  = document.querySelectorAll('.filter-tag');
+  const allCards    = document.querySelectorAll('.card');
+
+  let currentFilter = 'all';
+  let currentSearch = '';
+
+  function applyFilters() {
+    allCards.forEach(card => {
+      const title  = card.dataset.title.toLowerCase();
+      const domain = card.dataset.domain;
+
+      const matchSearch = currentSearch === '' || title.includes(currentSearch);
+      const matchFilter = currentFilter === 'all' || domain === currentFilter;
+
+      card.classList.toggle('hidden', !(matchSearch && matchFilter));
+    });
+
+    // Show empty state if a grid has no visible cards
+    document.querySelectorAll('.cards-grid').forEach(grid => {
+      let empty = grid.querySelector('.empty-state');
+      const visible = [...grid.querySelectorAll('.card')].filter(c => !c.classList.contains('hidden'));
+
+      if (visible.length === 0) {
+        if (!empty) {
+          empty = document.createElement('div');
+          empty.className = 'empty-state';
+          empty.innerHTML = '<strong>No courses found</strong>Try a different search term or filter.';
+          grid.appendChild(empty);
+        }
+      } else {
+        if (empty) empty.remove();
+      }
+    });
+  }
+
+  searchInput.addEventListener('input', e => {
+    currentSearch = e.target.value.trim().toLowerCase();
+    applyFilters();
+  });
+
+  filterTags.forEach(tag => {
+    tag.addEventListener('click', () => {
+      filterTags.forEach(t => t.classList.remove('active'));
+      tag.classList.add('active');
+      currentFilter = tag.dataset.filter;
+      applyFilters();
+    });
+  });
+
+  // ─── ACTIVE NAV HIGHLIGHT ON SCROLL ───
+  const sections = document.querySelectorAll('.section[id]');
+  const navLinks = document.querySelectorAll('nav a');
+
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        navLinks.forEach(a => a.classList.remove('active'));
+        const active = document.querySelector(`nav a[href="#${entry.target.id}"]`);
+        if (active) active.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-40% 0px -55% 0px' });
+
+  sections.forEach(s => observer.observe(s));
+</script>
+
+</body>
+</html>
