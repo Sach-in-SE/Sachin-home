@@ -8,7 +8,7 @@ Welcome to my DevOps and development playground! This repository serves as a liv
 
 Here is the quick access list to all my live pages. Simply click the links below to view the live work:
 
-Home Page link - https://sach-in-se.github.io/GSA-5317/
+Home Page link - https://sach-in-se.github.io/Sachin-home/
 
 *👉 **How to browse:** To add a new work, I just drop the HTML file here, and it instantly goes live at `https://github.ioyour-file-name.html`.*
 
