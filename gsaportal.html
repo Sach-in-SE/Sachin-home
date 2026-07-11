@@ -1,0 +1,1634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Google Gemini Student Ambassador Portal for Sachin Kumar" />
+  <title>Google Gemini Student Ambassador Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@200..700" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <style>
+    :root {
+      --bg: #07111f;
+      --bg-soft: #0c1730;
+      --bg-elevated: rgba(10, 18, 38, 0.72);
+      --card: rgba(14, 24, 49, 0.58);
+      --card-strong: rgba(13, 22, 44, 0.86);
+      --border: rgba(145, 177, 255, 0.18);
+      --border-strong: rgba(160, 187, 255, 0.34);
+      --text: #eef4ff;
+      --muted: #a7b6d6;
+      --blue: #5aa9ff;
+      --purple: #8c7cff;
+      --cyan: #2dd4ff;
+      --green: #62f0c3;
+      --gold: #ffd86b;
+      --shadow: 0 24px 80px rgba(0, 0, 0, 0.38);
+      --radius-xl: 30px;
+      --radius-lg: 22px;
+      --radius-md: 18px;
+      --radius-sm: 14px;
+      --container: 1180px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Poppins", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(89, 145, 255, 0.20), transparent 28%),
+        radial-gradient(circle at 85% 20%, rgba(140, 124, 255, 0.18), transparent 26%),
+        radial-gradient(circle at 50% 80%, rgba(45, 212, 255, 0.12), transparent 30%),
+        linear-gradient(180deg, #050b17 0%, #091323 100%);
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image: linear-gradient(rgba(255,255,255,0.028) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.028) 1px, transparent 1px);
+      background-size: 42px 42px;
+      mask-image: radial-gradient(circle at center, black 58%, transparent 100%);
+      opacity: 0.55;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    img {
+      max-width: 100%;
+      display: block;
+    }
+
+    .page-shell {
+      position: relative;
+      z-index: 1;
+    }
+
+    .orb {
+      position: fixed;
+      border-radius: 999px;
+      filter: blur(18px);
+      opacity: 0.35;
+      z-index: 0;
+      pointer-events: none;
+      animation: floatOrb 12s ease-in-out infinite;
+    }
+
+    .orb.one {
+      width: 240px;
+      height: 240px;
+      top: 7%;
+      left: -90px;
+      background: radial-gradient(circle, rgba(90, 169, 255, 0.8), rgba(90, 169, 255, 0));
+    }
+
+    .orb.two {
+      width: 280px;
+      height: 280px;
+      top: 22%;
+      right: -100px;
+      background: radial-gradient(circle, rgba(140, 124, 255, 0.8), rgba(140, 124, 255, 0));
+      animation-delay: -4s;
+    }
+
+    .orb.three {
+      width: 220px;
+      height: 220px;
+      bottom: 10%;
+      left: 18%;
+      background: radial-gradient(circle, rgba(45, 212, 255, 0.72), rgba(45, 212, 255, 0));
+      animation-delay: -8s;
+    }
+
+    .container {
+      width: min(100% - 32px, var(--container));
+      margin: 0 auto;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      padding: 18px 0 0;
+      pointer-events: none;
+    }
+
+    .topbar-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 14px 18px;
+      border: 1px solid rgba(255,255,255,0.10);
+      background: linear-gradient(145deg, rgba(10, 18, 38, 0.80), rgba(11, 22, 46, 0.54));
+      border-radius: 999px;
+      box-shadow: 0 16px 40px rgba(0,0,0,0.18);
+      backdrop-filter: blur(22px);
+      pointer-events: auto;
+    }
+
+    .brand-mark {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .brand-badge {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, rgba(90,169,255,0.28), rgba(140,124,255,0.26), rgba(45,212,255,0.24));
+      border: 1px solid rgba(255,255,255,0.10);
+      color: #fff;
+      flex: 0 0 auto;
+    }
+
+    .brand-copy {
+      min-width: 0;
+    }
+
+    .brand-copy strong {
+      display: block;
+      font-size: 0.98rem;
+      line-height: 1.2;
+    }
+
+    .brand-copy span {
+      display: block;
+      font-size: 0.78rem;
+      color: #9fb3d6;
+      margin-top: 2px;
+    }
+
+    .topbar-socials {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .social-icon-link {
+      width: 40px;
+      height: 40px;
+      border-radius: 999px;
+      display: inline-grid;
+      place-items: center;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.10);
+      color: #dfe9ff;
+      transition: transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease, background 220ms ease;
+    }
+
+    .social-icon-link:hover {
+      transform: translateY(-2px) scale(1.05);
+      background: rgba(90,169,255,0.12);
+      border-color: rgba(90,169,255,0.44);
+      box-shadow: 0 0 0 4px rgba(90,169,255,0.10), 0 0 24px rgba(90,169,255,0.26);
+      color: #ffffff;
+    }
+
+    .social-icon-link i {
+      font-size: 0.95rem;
+    }
+
+    .hero {
+      padding: 38px 0 34px;
+    }
+
+    .hero-panel {
+      position: relative;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      background: linear-gradient(145deg, rgba(10, 18, 38, 0.86), rgba(11, 22, 46, 0.58));
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(24px);
+      border-radius: 34px;
+      padding: 28px;
+    }
+
+    .hero-panel::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(90, 169, 255, 0.12), rgba(140, 124, 255, 0.08), rgba(45, 212, 255, 0.12));
+      opacity: 0.65;
+      pointer-events: none;
+    }
+
+    .hero-grid {
+      position: relative;
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 28px;
+      align-items: start;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 16px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.04);
+      color: #dce8ff;
+      font-size: 0.92rem;
+      letter-spacing: 0.02em;
+      margin-bottom: 18px;
+    }
+
+    .eyebrow .material-symbols-outlined {
+      font-size: 20px;
+      color: var(--cyan);
+    }
+
+    .hero h1 {
+      margin: 0;
+      font-size: clamp(1.9rem, 2.8vw, 3rem);
+      line-height: 1.15;
+      letter-spacing: -0.03em;
+      max-width: 18ch;
+      font-weight: 700;
+    }
+
+    .hero p {
+      margin: 18px 0 0;
+      max-width: 60ch;
+      color: var(--muted);
+      font-size: 1rem;
+      line-height: 1.85;
+    }
+
+    .identity-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    .identity-card {
+      position: relative;
+      padding: 18px 18px 16px;
+      border-radius: var(--radius-md);
+      background: rgba(255,255,255,0.045);
+      border: 1px solid rgba(255,255,255,0.10);
+      backdrop-filter: blur(18px);
+      transition: transform 220ms ease, border-color 220ms ease, box-shadow 220ms ease;
+    }
+
+    .identity-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(120, 170, 255, 0.32);
+      box-shadow: 0 18px 34px rgba(0,0,0,0.22);
+    }
+
+    .identity-label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 0.82rem;
+      color: #9fb3d6;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .identity-value {
+      font-size: 1.02rem;
+      font-weight: 600;
+      color: #f6f9ff;
+      word-break: break-word;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      border: 0;
+      cursor: pointer;
+      font-family: inherit;
+      font-weight: 600;
+      border-radius: 999px;
+      padding: 15px 22px;
+      transition: transform 220ms ease, box-shadow 220ms ease, filter 220ms ease, border-color 220ms ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(120deg, rgba(255,255,255,0), rgba(255,255,255,0.28), rgba(255,255,255,0));
+      transform: translateX(-110%);
+      transition: transform 560ms ease;
+    }
+
+    .btn:hover::after {
+      transform: translateX(110%);
+    }
+
+    .btn-primary {
+      color: #07111f;
+      background: linear-gradient(135deg, var(--cyan), var(--blue) 55%, var(--purple));
+      box-shadow: 0 14px 28px rgba(70, 141, 255, 0.28);
+    }
+
+    .btn-primary:hover,
+    .btn-secondary:hover,
+    .task-link:hover,
+    .certificate-btn:hover {
+      transform: translateY(-3px);
+      filter: brightness(1.05);
+    }
+
+    .hero-visual {
+      position: relative;
+      display: grid;
+      gap: 18px;
+    }
+
+    .badge-card {
+      position: relative;
+      overflow: hidden;
+      padding: 24px;
+      border-radius: 28px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: linear-gradient(180deg, rgba(13, 23, 46, 0.88), rgba(8, 14, 29, 0.76));
+      box-shadow: 0 18px 50px rgba(0,0,0,0.26);
+      backdrop-filter: blur(24px);
+    }
+
+    .badge-card::before {
+      content: "";
+      position: absolute;
+      inset: 1px;
+      border-radius: 27px;
+      padding: 1px;
+      background: linear-gradient(135deg, rgba(90,169,255,0.7), rgba(140,124,255,0.35), rgba(45,212,255,0.65));
+      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+
+    .badge-topline {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+    }
+
+    .badge-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 1.02rem;
+      font-weight: 700;
+    }
+
+    .badge-title .material-symbols-outlined {
+      font-size: 24px;
+      color: var(--gold);
+    }
+
+    .badge-value {
+      display: block;
+      color: #ffe7a0;
+      font-size: clamp(0.6rem, 0.40rem + 0.30vw, 0.70rem);
+      line-height: 0.8;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      text-transform: none;
+      white-space: normal;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.07);
+      color: #d7e2fb;
+      font-size: 0.82rem;
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+
+    .status-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 0 6px rgba(98, 240, 195, 0.12);
+    }
+
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1px;
+    }
+
+    .metric {
+      padding: 18px 16px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.045);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .metric small {
+      display: block;
+      color: #9db0d1;
+      font-size: 0.5rem;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .metric strong {
+      font-size: clamp(1.3rem, 2vw, 1.9rem);
+      line-height: 1;
+    }
+
+    .metric.badge-metric {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .metric.badge-metric .badge-value {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: center;
+      width: 100%;
+      font-size: clamp(0.95rem, 1vw + 0.6rem, 1.2rem);
+      line-height: 1.1;
+      word-break: keep-all;
+      overflow-wrap: break-word;
+      white-space: normal;
+      color: #ffe7a0;
+      letter-spacing: -0.01em;
+    }
+
+    .metric .score {
+      color: var(--cyan);
+    }
+
+    .metric .rank {
+      color: var(--gold);
+    }
+
+    .summary-card {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 16px;
+      align-items: center;
+      padding: 16px 18px;
+      border-radius: 24px;
+      border: 1px solid rgba(255,255,255,0.10);
+      background: rgba(255,255,255,0.05);
+    }
+
+    .summary-icon {
+      width: 58px;
+      height: 58px;
+      border-radius: 18px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, rgba(90,169,255,0.26), rgba(140,124,255,0.22));
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+
+    .summary-icon .material-symbols-outlined {
+      font-size: 28px;
+      color: #fff;
+    }
+
+    .summary-card h3,
+    .summary-card p {
+      margin: 0;
+    }
+
+    .summary-card h3 {
+      font-size: 1rem;
+      margin-bottom: 4px;
+    }
+
+    .summary-card p {
+      color: var(--muted);
+      line-height: 1.6;
+      font-size: 0.93rem;
+    }
+
+    .section {
+      padding: 18px 0 34px;
+    }
+
+    .section-header {
+      margin-bottom: 22px;
+    }
+
+    .section-header h2 {
+      margin: 0;
+      font-size: clamp(1.8rem, 3vw, 3rem);
+      letter-spacing: -0.03em;
+    }
+
+    .section-header p {
+      margin: 10px 0 0;
+      color: var(--muted);
+      line-height: 1.8;
+      max-width: 70ch;
+    }
+
+    .section-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 14px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: #d4e0fa;
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .task-grid {
+      display: grid;
+      gap: 20px;
+    }
+
+    .task-card {
+      position: relative;
+      overflow: hidden;
+      border-radius: 30px;
+      padding: 26px;
+      background: linear-gradient(180deg, rgba(14, 24, 49, 0.84), rgba(9, 15, 31, 0.92));
+      border: 1px solid rgba(255,255,255,0.11);
+      box-shadow: 0 18px 55px rgba(0,0,0,0.24);
+      backdrop-filter: blur(22px);
+      transition: transform 240ms ease, border-color 240ms ease, box-shadow 240ms ease;
+    }
+
+    .task-card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(133, 183, 255, 0.30);
+      box-shadow: 0 26px 60px rgba(0,0,0,0.30);
+    }
+
+    .task-card::before {
+      content: "";
+      position: absolute;
+      inset: 1px;
+      border-radius: 29px;
+      padding: 1px;
+      background: linear-gradient(140deg, rgba(90,169,255,0.42), rgba(140,124,255,0.28), rgba(45,212,255,0.35));
+      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+      opacity: 0.8;
+    }
+
+    .task-top {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .task-heading h3 {
+      margin: 0;
+      font-size: clamp(1.4rem, 2.2vw, 2rem);
+      letter-spacing: -0.03em;
+    }
+
+    .task-heading p {
+      margin: 8px 0 0;
+      color: var(--muted);
+      line-height: 1.7;
+      max-width: 72ch;
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 18px 0 22px;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.05);
+      color: #d7e4ff;
+      border: 1px solid rgba(255,255,255,0.10);
+      font-size: 0.92rem;
+    }
+
+    .tag strong {
+      color: #fff;
+    }
+
+    .task-columns {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .info-box,
+    .reward-box,
+    .guideline-box,
+    .prize-box {
+      border-radius: 24px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.04);
+      padding: 20px;
+    }
+
+    .info-box.highlight {
+      background: linear-gradient(180deg, rgba(90,169,255,0.12), rgba(140,124,255,0.08));
+      border-color: rgba(126, 182, 255, 0.26);
+    }
+
+    .box-title {
+      margin: 0 0 14px;
+      font-size: 1rem;
+      color: #eef4ff;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .box-title .material-symbols-outlined {
+      color: var(--cyan);
+      font-size: 22px;
+    }
+
+    .requirements {
+      display: grid;
+      gap: 16px;
+    }
+
+    .requirement-item {
+      padding: 16px;
+      border-radius: 18px;
+      background: rgba(7, 11, 21, 0.48);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .requirement-item span {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.84rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #9fb3d6;
+      margin-bottom: 8px;
+    }
+
+    .requirement-item strong,
+    .requirement-item a,
+    .guideline-list li strong {
+      color: #fff;
+    }
+
+    .requirement-item p,
+    .requirement-item a,
+    .muted-copy {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .requirement-item a {
+      color: #dbe8ff;
+      word-break: break-word;
+    }
+
+    .requirement-item a:hover {
+      color: var(--cyan);
+    }
+
+    .prize-box {
+      margin-top: 18px;
+    }
+
+    .prize-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .prize-item {
+      padding: 14px 16px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .prize-item .material-symbols-outlined {
+      color: var(--gold);
+    }
+
+    .grand-prize {
+      margin-top: 18px;
+      border-radius: 26px;
+      overflow: hidden;
+      position: relative;
+      border: 1px solid rgba(255, 226, 139, 0.30);
+      background: linear-gradient(145deg, rgba(35, 43, 78, 0.92), rgba(15, 19, 34, 0.96));
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
+    }
+
+    .grand-prize::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top left, rgba(255, 216, 107, 0.22), transparent 40%), radial-gradient(circle at bottom right, rgba(45, 212, 255, 0.14), transparent 38%);
+      pointer-events: none;
+    }
+
+    .grand-prize-content {
+      position: relative;
+      display: grid;
+      grid-template-columns: 1fr 0.95fr;
+      gap: 18px;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .grand-prize-copy h4 {
+      margin: 0;
+      font-size: clamp(1.4rem, 2vw, 2.1rem);
+      line-height: 1.1;
+    }
+
+    .grand-prize-copy p {
+      margin: 12px 0 0;
+      color: var(--muted);
+      line-height: 1.8;
+    }
+
+    .grand-prize-copy .reward-name {
+      display: inline-block;
+      margin-top: 12px;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--gold);
+    }
+
+    .pixel-visual {
+      position: relative;
+      min-height: 290px;
+      display: grid;
+      place-items: center;
+      border-radius: 22px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+      border: 1px solid rgba(255,255,255,0.08);
+      overflow: hidden;
+    }
+
+    .pixel-visual::after {
+      content: "";
+      position: absolute;
+      inset: 12px;
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,0.08);
+      pointer-events: none;
+    }
+
+    .pixel-visual img {
+      width: min(100%, 270px);
+      height: auto;
+      object-fit: contain;
+      filter: drop-shadow(0 24px 30px rgba(0,0,0,0.45));
+      transform: rotate(-8deg);
+      transition: transform 260ms ease, scale 260ms ease;
+    }
+
+    .pixel-visual:hover img {
+      transform: rotate(-5deg) scale(1.03);
+    }
+
+    .disclaimer {
+      margin-top: 14px;
+      color: #cfdbf5;
+      font-size: 0.95rem;
+      line-height: 1.8;
+    }
+
+    .task-link-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .task-link,
+    .btn-secondary,
+    .certificate-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      min-height: 48px;
+      padding: 13px 18px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.05);
+      color: #f5f8ff;
+      font-weight: 600;
+      transition: transform 220ms ease, background 220ms ease, border-color 220ms ease, box-shadow 220ms ease;
+    }
+
+    .task-link:hover,
+    .btn-secondary:hover,
+    .certificate-btn:hover {
+      background: rgba(255,255,255,0.08);
+      border-color: rgba(135, 187, 255, 0.28);
+      box-shadow: 0 12px 22px rgba(0,0,0,0.18);
+    }
+
+    .badge-flag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 12px;
+      border-radius: 999px;
+      background: rgba(45, 212, 255, 0.10);
+      color: #d9f6ff;
+      border: 1px solid rgba(45, 212, 255, 0.24);
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .guideline-box {
+      background: linear-gradient(180deg, rgba(90,169,255,0.10), rgba(140,124,255,0.08));
+      border-color: rgba(131, 178, 255, 0.24);
+    }
+
+    .guideline-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      gap: 12px;
+    }
+
+    .guideline-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 12px 14px;
+      border-radius: 16px;
+      background: rgba(7, 11, 21, 0.42);
+      border: 1px solid rgba(255,255,255,0.08);
+      color: #d9e5fb;
+      line-height: 1.65;
+    }
+
+    .guideline-list .material-symbols-outlined {
+      color: var(--green);
+      font-size: 20px;
+      margin-top: 1px;
+      flex: 0 0 auto;
+    }
+
+    .task-meta {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    .meta-card {
+      padding: 16px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .meta-card span {
+      display: block;
+      color: #9fb3d6;
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 8px;
+    }
+
+    .meta-card strong {
+      font-size: 1.02rem;
+    }
+
+    .certificate-section {
+      padding-bottom: 48px;
+    }
+
+    .certificate-panel {
+      position: relative;
+      overflow: hidden;
+      border-radius: 34px;
+      padding: 30px;
+      background: linear-gradient(145deg, rgba(10, 18, 38, 0.88), rgba(12, 20, 43, 0.60));
+      border: 1px solid rgba(255,255,255,0.12);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(22px);
+    }
+
+    .certificate-panel::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(90,169,255,0.12), rgba(140,124,255,0.10), rgba(45,212,255,0.10));
+      pointer-events: none;
+    }
+
+    .certificate-panel > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .certificate-panel .section-header {
+      margin-bottom: 18px;
+    }
+
+    .certificate-btn {
+      margin-top: 10px;
+      min-width: min(100%, 280px);
+      color: #08111f;
+      background: linear-gradient(135deg, rgba(255,255,255,0.98), rgba(180, 219, 255, 0.96));
+      box-shadow: 0 16px 34px rgba(120, 173, 255, 0.18);
+    }
+
+    .footer {
+      padding: 18px 0 42px;
+    }
+
+    .footer-inner {
+      position: relative;
+      overflow: hidden;
+      padding: 28px;
+      border-radius: 30px;
+      border: 1px solid rgba(255,255,255,0.10);
+      border-top: 1px solid rgba(120, 173, 255, 0.28);
+      background: linear-gradient(145deg, rgba(10, 18, 38, 0.86), rgba(9, 16, 32, 0.72));
+      box-shadow: 0 18px 54px rgba(0,0,0,0.24);
+      backdrop-filter: blur(22px);
+      color: #cfdbf5;
+    }
+
+    .footer-inner::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(90,169,255,0.10), rgba(140,124,255,0.08), rgba(45,212,255,0.10));
+      pointer-events: none;
+    }
+
+    .footer-grid {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: 1.35fr 0.8fr 1.15fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    .footer-brand h3,
+    .footer-links h4,
+    .footer-connect h4 {
+      margin: 0;
+      color: #f4f8ff;
+    }
+
+    .footer-brand p {
+      margin: 12px 0 0;
+      color: #a7b6d6;
+      line-height: 1.8;
+      max-width: 42ch;
+    }
+
+    .footer-links ul,
+    .footer-connect ul {
+      list-style: none;
+      padding: 0;
+      margin: 14px 0 0;
+      display: grid;
+      gap: 12px;
+    }
+
+    .footer-links a,
+    .footer-connect a {
+      color: #cfdbf5;
+      transition: color 220ms ease, transform 220ms ease;
+    }
+
+    .footer-links a:hover,
+    .footer-connect a:hover {
+      color: #ffffff;
+    }
+
+    .footer-link-item,
+    .footer-connect-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .footer-connect-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.10);
+      color: #dfe9ff;
+      transition: transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease, background 220ms ease;
+      flex: 0 0 auto;
+    }
+
+    .footer-connect-item:hover .footer-connect-icon {
+      transform: scale(1.08);
+      background: rgba(90,169,255,0.14);
+      border-color: rgba(90,169,255,0.38);
+      box-shadow: 0 0 0 4px rgba(90,169,255,0.09), 0 0 22px rgba(90,169,255,0.24);
+    }
+
+    .footer-connect-item span:last-child {
+      display: block;
+      color: #d7e4ff;
+      font-weight: 500;
+    }
+
+    .footer-divider {
+      position: relative;
+      z-index: 1;
+      margin: 24px 0 18px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(140, 187, 255, 0.45), transparent);
+    }
+
+    .footer-copy {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      color: #b7c6e4;
+      font-size: 0.94rem;
+    }
+
+    .footer-copy strong,
+    .footer-copy a {
+      color: #ffffff;
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(22px);
+      transition: opacity 700ms ease, transform 700ms ease;
+    }
+
+    .reveal.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @keyframes floatOrb {
+      0%, 100% { transform: translateY(0px) scale(1); }
+      50% { transform: translateY(-18px) scale(1.04); }
+    }
+
+    @media (max-width: 1024px) {
+      .hero-grid,
+      .task-columns,
+      .grand-prize-content {
+        grid-template-columns: 1fr;
+      }
+
+      .hero h1 {
+        max-width: 16ch;
+      }
+
+      .pixel-visual {
+        min-height: 240px;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .topbar {
+        padding-top: 12px;
+      }
+
+      .topbar-inner {
+        border-radius: 24px;
+        padding: 14px;
+      }
+
+      .topbar-socials {
+        gap: 8px;
+      }
+
+      .hero,
+      .section,
+      .certificate-section {
+        padding-left: 0;
+        padding-right: 0;
+      }
+
+      .hero-panel,
+      .certificate-panel,
+      .task-card {
+        border-radius: 26px;
+        padding: 20px;
+      }
+
+      .identity-grid,
+      .metric-grid,
+      .prize-grid,
+      .task-meta {
+        grid-template-columns: 1fr;
+      }
+
+      .footer-inner {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .hero-actions,
+      .task-link-row {
+        width: 100%;
+      }
+
+      .btn,
+      .task-link,
+      .btn-secondary,
+      .certificate-btn {
+        width: 100%;
+      }
+
+      .footer-inner {
+        padding: 20px;
+        border-radius: 24px;
+      }
+
+      .footer-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .footer-copy {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="orb one"></div>
+  <div class="orb two"></div>
+  <div class="orb three"></div>
+
+  <header class="topbar">
+    <div class="container">
+      <div class="topbar-inner">
+        <a class="brand-mark" href="#" data-scroll="home" aria-label="Go to top of page">
+          <span class="brand-badge"><span class="material-symbols-outlined">auto_awesome</span></span>
+          <span class="brand-copy">
+            <strong>Google Gemini Student Ambassador</strong>
+            <span>Sachin Kumar</span>
+          </span>
+        </a>
+
+        <div class="topbar-socials" aria-label="Social media links">
+          <a class="social-icon-link" href="https://github.com/Sach-in-SE" target="_blank" rel="noreferrer" aria-label="GitHub" title="GitHub">
+            <i class="fa-brands fa-github"></i>
+          </a>
+          <a class="social-icon-link" href="https://www.linkedin.com/in/sach-in-dev/" target="_blank" rel="noreferrer" aria-label="LinkedIn" title="LinkedIn">
+            <i class="fa-brands fa-linkedin-in"></i>
+          </a>
+          <a class="social-icon-link" href="https://sa-chin.dev/" target="_blank" rel="noreferrer" aria-label="Portfolio" title="Portfolio">
+            <i class="fa-solid fa-globe"></i>
+          </a>
+          <a class="social-icon-link" href="https://www.instagram.com/official__luc_ky/" target="_blank" rel="noreferrer" aria-label="Instagram" title="Instagram">
+            <i class="fa-brands fa-instagram"></i>
+          </a>
+          <a class="social-icon-link" href="https://chat.whatsapp.com/KKxuHLjVFm39ivmTOZAG9I" target="_blank" rel="noreferrer" aria-label="WhatsApp Community" title="WhatsApp Community">
+            <i class="fa-brands fa-whatsapp"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="page-shell" id="home">
+    <main>
+      <section class="hero">
+        <div class="container">
+          <div class="hero-panel reveal">
+            <div class="hero-grid">
+              <div class="hero-copy">
+                <div class="eyebrow"><span class="material-symbols-outlined">auto_awesome</span> Google Gemini Student Ambassador Journey</div>
+                <h1>Welcome Future Engineers</h1>
+                <p>
+                  This portal documents my monthly tasks, events, achievements, certificates, and resources during the Google Gemini Student Ambassador Program. It serves as a polished record of my progress, participation, and milestones throughout the journey.
+                </p>
+
+                <div class="identity-grid" aria-label="Student identity details">
+                  <div class="identity-card">
+                    <span class="identity-label">Name</span>
+                    <div class="identity-value">Sachin Kumar</div>
+                  </div>
+                  <div class="identity-card">
+                    <span class="identity-label">Role</span>
+                    <div class="identity-value">Google Gemini Student Ambassador</div>
+                  </div>
+                  <div class="identity-card">
+                    <span class="identity-label">GID</span>
+                    <div class="identity-value">5317</div>
+                  </div>
+                  <div class="identity-card">
+                    <span class="identity-label">Email</span>
+                    <div class="identity-value">codersachin01@gmail.com</div>
+                  </div>
+                  <div class="identity-card" style="grid-column: 1 / -1;">
+                    <span class="identity-label">University</span>
+                    <div class="identity-value">Vikram University, Ujjain</div>
+                  </div>
+                </div>
+
+                <div class="hero-actions">
+                  <a class="btn btn-primary" href="#monthly-tasks"><span class="material-symbols-outlined">trending_flat</span> Explore Monthly Tasks</a>
+                </div>
+              </div>
+
+              <div class="hero-visual">
+                <div class="badge-card">
+                  <div class="badge-topline">
+                      <div class="badge-title"><span class="material-symbols-outlined">school</span> Ambassador Snapshot</div>
+                    <div class="status-pill"><span class="status-dot"></span> Active Journey</div>
+                  </div>
+
+                  <div class="summary-card">
+                    <div class="summary-icon"><span class="material-symbols-outlined">location_on</span></div>
+                    <div>
+                      <h3>Vikram University, Ujjain</h3>
+                      <p>Academic base for my Google Gemini Student Ambassador activities.</p>
+                    </div>
+                  </div>
+
+                  <div style="height: 16px;"></div>
+
+                  <div class="metric-grid">
+                    <div class="metric badge-metric">
+                      <small>Current Badge</small>
+                      <strong class="badge-value"><span>Bronze</span><span>Explorer</span></strong>
+                    </div>
+                    <div class="metric">
+                      <small>Total Score</small>
+                      <strong class="score">760</strong>
+                    </div>
+                    <div class="metric">
+                      <small>National Rank</small>
+                      <strong class="rank">#1871</strong>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="summary-card">
+                  <div class="summary-icon"><span class="material-symbols-outlined">workspace_premium</span></div>
+                  <div>
+                    <h3>Premium progress, built for clarity</h3>
+                    <p>Quickly review current achievements, milestones, and the status of my ambassador path in one place.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="monthly-tasks" class="section">
+        <div class="container">
+          <div class="section-header reveal">
+            <div class="section-chip"><span class="material-symbols-outlined">calendar_month</span> Monthly Tasks</div>
+            <h2>Monthly Tasks</h2>
+            <p>Every month new official Gemini Ambassador tasks will appear here.</p>
+          </div>
+
+          <div class="task-grid">
+            <!-- Monthly task cards can be duplicated below as the program adds new official assignments. -->
+            <article class="task-card reveal">
+              <div class="task-top">
+                <div class="task-heading">
+                  <h3>Product Trials</h3>
+                  <p>Every month we host a Product Trial session where participants explore a featured Gemini capability and submit feedback.</p>
+                </div>
+                <div class="badge-flag"><span class="material-symbols-outlined">verified</span> Mandatory Task</div>
+              </div>
+
+              <div class="task-meta">
+                <div class="meta-card">
+                  <span>Points</span>
+                  <strong>Up to 500 Points</strong>
+                </div>
+                <div class="meta-card">
+                  <span>Task Type</span>
+                  <strong>Required Participation</strong>
+                </div>
+              </div>
+
+              <div class="task-columns" style="margin-top: 18px;">
+                <div class="info-box highlight">
+                  <h4 class="box-title"><span class="material-symbols-outlined">assignment</span> Requirements</h4>
+                  <div class="requirements">
+                    <div class="requirement-item">
+                      <span><span class="material-symbols-outlined" style="font-size: 18px; color: var(--gold);">check_circle</span> Before the session</span>
+                      <p>Participants <strong>must</strong> fill the <strong>Pre Survey Form</strong> before attending the Product Trial session.</p>
+                      <p style="margin-top: 10px;">Form link: <a href="https://producttrialsurvey.geministudentambassador.com/" target="_blank" rel="noreferrer">https://producttrialsurvey.geministudentambassador.com/</a></p>
+                    </div>
+                    <div class="requirement-item">
+                      <span><span class="material-symbols-outlined" style="font-size: 18px; color: var(--gold);">fact_check</span> After the session</span>
+                      <p>Participants must complete the <strong>Feedback Form</strong> after the session. Both forms must be submitted using the <strong>same email address</strong>.</p>
+                      <p style="margin-top: 10px;">Form link: <a href="https://producttrialfeedback.geministudentambassador.com/" target="_blank" rel="noreferrer">https://producttrialfeedback.geministudentambassador.com/</a></p>
+                      <p style="margin-top: 10px; color: #ffd2d9;">Otherwise participants will not be eligible.</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <div class="prize-box">
+                    <h4 class="box-title"><span class="material-symbols-outlined">card_membership</span> Prize Section</h4>
+                    <div class="prize-grid">
+                      <div class="prize-item"><span class="material-symbols-outlined">verified_user</span> Participant Certificate</div>
+                      <div class="prize-item"><span class="material-symbols-outlined">emoji_events</span> Winner Certificate</div>
+                    </div>
+                  </div>
+
+                  <div class="grand-prize">
+                    <div class="grand-prize-content">
+                      <div class="grand-prize-copy">
+                        <span class="badge-flag" style="margin-bottom: 14px;">🏆 Grand Prize</span>
+                        <h4>Google Pixel Phone</h4>
+                        <p>
+                          A featured Google Pixel reward is reserved for the highest-performing national participant in this task category.
+                        </p>
+                        <span class="reward-name">Premium Prize Highlight</span>
+                        <div class="disclaimer">Only ONE National Winner will receive the Google Pixel Phone.</div>
+                      </div>
+                      <div class="pixel-visual">
+                        <img
+                          src="./phone.jpg"
+                          alt="Google Pixel phone"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <article class="task-card reveal">
+              <div class="task-top">
+                <div class="task-heading">
+                  <h3>Conduct AI Mode Product Understanding</h3>
+                  <p>Introduce participants to AI Mode, guide them through its features, and record their honest reactions.</p>
+                </div>
+                <div class="badge-flag"><span class="material-symbols-outlined">star</span> Optional Task</div>
+              </div>
+
+              <div class="task-meta">
+                <div class="meta-card">
+                  <span>Points</span>
+                  <strong>Up to 200 Points</strong>
+                </div>
+                <div class="meta-card">
+                  <span>Task Focus</span>
+                  <strong>Product Understanding</strong>
+                </div>
+              </div>
+
+              <div class="task-link-row">
+                <a class="task-link" href="https://productunderstandingpre.geministudentambassador.com/" target="_blank" rel="noreferrer">
+                  <span class="material-symbols-outlined">assignment_ind</span> Pre Survey Form
+                </a>
+                <a class="task-link" href="https://productunderstandingpost.geministudentambassador.com/" target="_blank" rel="noreferrer">
+                  <span class="material-symbols-outlined">description</span> Post Survey Form
+                </a>
+              </div>
+
+              <div class="task-columns" style="margin-top: 18px;">
+                <div>
+                  <div class="info-box highlight">
+                    <h4 class="box-title"><span class="material-symbols-outlined">movie</span> Session Guidelines</h4>
+                    <div class="muted-copy" style="margin-bottom: 14px;">Only the most important requirements are shown here so each session stays consistent and easy to execute.</div>
+                    <ul class="guideline-list">
+                      <li><span class="material-symbols-outlined">check_circle</span><strong>Complete both Pre &amp; Post Surveys</strong></li>
+                      <li><span class="material-symbols-outlined">check_circle</span><strong>Record every session</strong></li>
+                      <li><span class="material-symbols-outlined">check_circle</span><strong>Use clear audio</strong></li>
+                      <li><span class="material-symbols-outlined">check_circle</span><strong>Ensure good lighting</strong></li>
+                      <li><span class="material-symbols-outlined">check_circle</span><strong>Participant must be visible</strong></li>
+                      <li><span class="material-symbols-outlined">check_circle</span><strong>Follow the official monthly interview script</strong></li>
+                      <li><span class="material-symbols-outlined">check_circle</span><strong>Maximum 20 interviews per session</strong></li>
+                      <li><span class="material-symbols-outlined">check_circle</span><strong>Every participant must have a separate video link</strong></li>
+                    </ul>
+                  </div>
+                </div>
+
+                <div class="reward-box">
+                  <h4 class="box-title"><span class="material-symbols-outlined">insights</span> Task Summary</h4>
+                  <div class="summary-card" style="margin-bottom: 14px;">
+                    <div class="summary-icon"><span class="material-symbols-outlined">screen_search_desktop</span></div>
+                    <div>
+                      <h3>Interactive product walkthrough</h3>
+                      <p>Guide participants through AI Mode and capture their authentic feedback.</p>
+                    </div>
+                  </div>
+                  <div class="summary-card">
+                    <div class="summary-icon"><span class="material-symbols-outlined">video_camera_front</span></div>
+                    <div>
+                      <h3>Documentation ready</h3>
+                      <p>Keep a separate video link for each participant for organized reporting.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="certificate-section">
+        <div class="container">
+          <div class="certificate-panel reveal">
+            <div class="section-header">
+              <div class="section-chip"><span class="material-symbols-outlined">workspace_premium</span> Certificates</div>
+              <h2>Certificates</h2>
+              <p>All certificates earned during my Google Gemini Student Ambassador journey will be available here.</p>
+            </div>
+            <a class="certificate-btn" href="#"><span class="material-symbols-outlined">contract</span> View Certificates</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-inner reveal">
+          <div class="footer-grid">
+            <div class="footer-brand">
+              <h3>Google Gemini Student Ambassador</h3>
+              <p>This portal showcases my Google Gemini Student Ambassador journey, monthly activities, product trials, achievements, resources and certifications.</p>
+            </div>
+
+            <div class="footer-links">
+              <h4>Quick Links</h4>
+              <ul>
+                <li><a href="#" data-scroll="home">Home</a></li>
+                <li><a href="#monthly-tasks" data-scroll="monthly-tasks">Monthly Tasks</a></li>
+                <li><a href="#" data-scroll="certificates">Certificates</a></li>
+              </ul>
+            </div>
+
+            <div class="footer-connect">
+              <h4>Connect With Me</h4>
+              <ul>
+                <li>
+                  <a class="footer-connect-item" href="https://github.com/Sach-in-SE" target="_blank" rel="noreferrer" title="GitHub">
+                    <span class="footer-connect-icon"><i class="fa-brands fa-github"></i></span>
+                    <span>GitHub</span>
+                  </a>
+                </li>
+                <li>
+                  <a class="footer-connect-item" href="https://sa-chin.dev/" target="_blank" rel="noreferrer" title="Portfolio">
+                    <span class="footer-connect-icon"><i class="fa-solid fa-globe"></i></span>
+                    <span>Portfolio</span>
+                  </a>
+                </li>
+                <li>
+                  <a class="footer-connect-item" href="https://www.linkedin.com/in/sach-in-dev/" target="_blank" rel="noreferrer" title="LinkedIn">
+                    <span class="footer-connect-icon"><i class="fa-brands fa-linkedin-in"></i></span>
+                    <span>LinkedIn</span>
+                  </a>
+                </li>
+                <li>
+                  <a class="footer-connect-item" href="https://www.instagram.com/official__luc_ky/" target="_blank" rel="noreferrer" title="Instagram">
+                    <span class="footer-connect-icon"><i class="fa-brands fa-instagram"></i></span>
+                    <span>Instagram</span>
+                  </a>
+                </li>
+                <li>
+                  <a class="footer-connect-item" href="https://chat.whatsapp.com/KKxuHLjVFm39ivmTOZAG9I" target="_blank" rel="noreferrer" title="WhatsApp Community">
+                    <span class="footer-connect-icon"><i class="fa-brands fa-whatsapp"></i></span>
+                    <span>WhatsApp Community</span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="footer-divider"></div>
+
+          <div class="footer-copy">
+            <div>© 2026 Sachin Kumar</div>
+            <div>Made with <span class="material-symbols-outlined">favorite</span> for the Google Gemini Student Ambassador Program.</div>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    // Reveal sections smoothly as they enter the viewport.
+    const revealElements = document.querySelectorAll('.reveal');
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+
+    revealElements.forEach((element, index) => {
+      element.style.transitionDelay = `${Math.min(index * 70, 280)}ms`;
+      revealObserver.observe(element);
+    });
+
+    // Keep anchor navigation smooth even on browsers that ignore CSS scroll-behavior.
+    document.querySelectorAll('a[href^="#"]').forEach((link) => {
+      link.addEventListener('click', (event) => {
+        const targetId = link.getAttribute('href');
+        if (!targetId || targetId === '#') return;
+        const target = document.querySelector(targetId);
+        if (target) {
+          event.preventDefault();
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+
+    const scrollTargets = {
+      home: document.querySelector('.page-shell'),
+      'monthly-tasks': document.querySelector('#monthly-tasks'),
+      certificates: document.querySelector('.certificate-section')
+    };
+
+    document.querySelectorAll('[data-scroll]').forEach((link) => {
+      link.addEventListener('click', (event) => {
+        const targetKey = link.getAttribute('data-scroll');
+        const target = scrollTargets[targetKey];
+        if (!target) return;
+        event.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+  </script>
+</body>
+</html>
