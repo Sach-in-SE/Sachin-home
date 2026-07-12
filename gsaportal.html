@@ -123,11 +123,9 @@
     }
 
     .topbar {
-      position: sticky;
-      top: 0;
+      position: relative;
       z-index: 20;
       padding: 18px 0 0;
-      pointer-events: none;
     }
 
     .topbar-inner {
@@ -140,8 +138,6 @@
       background: linear-gradient(145deg, rgba(10, 18, 38, 0.80), rgba(11, 22, 46, 0.54));
       border-radius: 999px;
       box-shadow: 0 16px 40px rgba(0,0,0,0.18);
-      backdrop-filter: blur(22px);
-      pointer-events: auto;
     }
 
     .brand-mark {
@@ -276,7 +272,7 @@
       margin: 18px 0 0;
       max-width: 60ch;
       color: var(--muted);
-      font-size: 1rem;
+      font-size: clamp(0.95rem, 0.92rem + 0.2vw, 1rem);
       line-height: 1.85;
     }
 
@@ -394,6 +390,7 @@
       padding: 1px;
       background: linear-gradient(135deg, rgba(90,169,255,0.7), rgba(140,124,255,0.35), rgba(45,212,255,0.65));
       -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+      mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
       -webkit-mask-composite: xor;
       mask-composite: exclude;
       pointer-events: none;
@@ -538,14 +535,14 @@
     }
 
     .summary-card h3 {
-      font-size: 1rem;
+      font-size: clamp(0.95rem, 0.92rem + 0.12vw, 1rem);
       margin-bottom: 4px;
     }
 
     .summary-card p {
       color: var(--muted);
       line-height: 1.6;
-      font-size: 0.93rem;
+      font-size: clamp(0.88rem, 0.86rem + 0.12vw, 0.93rem);
     }
 
     .section {
@@ -567,6 +564,7 @@
       color: var(--muted);
       line-height: 1.8;
       max-width: 70ch;
+      font-size: clamp(0.95rem, 0.92rem + 0.18vw, 1rem);
     }
 
     .section-chip {
@@ -615,6 +613,7 @@
       padding: 1px;
       background: linear-gradient(140deg, rgba(90,169,255,0.42), rgba(140,124,255,0.28), rgba(45,212,255,0.35));
       -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+      mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
       -webkit-mask-composite: xor;
       mask-composite: exclude;
       pointer-events: none;
@@ -641,6 +640,7 @@
       color: var(--muted);
       line-height: 1.7;
       max-width: 72ch;
+      font-size: clamp(0.92rem, 0.90rem + 0.14vw, 1rem);
     }
 
     .tag-row {
@@ -659,7 +659,7 @@
       background: rgba(255,255,255,0.05);
       color: #d7e4ff;
       border: 1px solid rgba(255,255,255,0.10);
-      font-size: 0.92rem;
+      font-size: clamp(0.82rem, 0.80rem + 0.12vw, 0.92rem);
     }
 
     .tag strong {
@@ -996,6 +996,10 @@
       margin-bottom: 18px;
     }
 
+    .certificate-panel .section-header p {
+      max-width: 64ch;
+    }
+
     .certificate-btn {
       margin-top: 10px;
       min-width: min(100%, 280px);
@@ -1050,6 +1054,7 @@
       color: #a7b6d6;
       line-height: 1.8;
       max-width: 42ch;
+      font-size: clamp(0.92rem, 0.90rem + 0.12vw, 0.98rem);
     }
 
     .footer-links ul,
@@ -1122,7 +1127,7 @@
       justify-content: space-between;
       gap: 10px;
       color: #b7c6e4;
-      font-size: 0.94rem;
+      font-size: clamp(0.86rem, 0.84rem + 0.12vw, 0.94rem);
     }
 
     .footer-copy strong,
@@ -1162,32 +1167,84 @@
       }
     }
 
-    @media (max-width: 720px) {
+    @media (max-width: 768px) {
+      .container {
+        width: min(100% - 24px, var(--container));
+      }
+
       .topbar {
         padding-top: 12px;
       }
 
       .topbar-inner {
+        gap: 12px;
+        padding: 12px 14px;
         border-radius: 24px;
-        padding: 14px;
+      }
+
+      .brand-badge {
+        width: 38px;
+        height: 38px;
+      }
+
+      .brand-copy strong {
+        font-size: 0.92rem;
+      }
+
+      .brand-copy span {
+        font-size: 0.72rem;
       }
 
       .topbar-socials {
         gap: 8px;
+        flex: 1 1 100%;
+        justify-content: flex-start;
       }
 
-      .hero,
-      .section,
-      .certificate-section {
-        padding-left: 0;
-        padding-right: 0;
+      .social-icon-link {
+        width: 36px;
+        height: 36px;
+      }
+
+      .hero {
+        padding: 28px 0 26px;
       }
 
       .hero-panel,
       .certificate-panel,
       .task-card {
-        border-radius: 26px;
         padding: 20px;
+        border-radius: 26px;
+      }
+
+      .hero h1 {
+        font-size: clamp(1.75rem, 6vw, 2.35rem);
+      }
+
+      .hero p {
+        margin-top: 14px;
+        line-height: 1.75;
+      }
+
+      .section-header h2,
+      .task-heading h3,
+      .grand-prize-copy h4 {
+        font-size: clamp(1.35rem, 5vw, 1.9rem);
+      }
+
+      .hero-actions,
+      .task-link-row {
+        gap: 10px;
+      }
+
+      .btn,
+      .task-link,
+      .btn-secondary,
+      .certificate-btn {
+        width: 100%;
+        min-height: 46px;
+        padding: 12px 16px;
+        font-size: 0.92rem;
       }
 
       .identity-grid,
@@ -1197,35 +1254,184 @@
         grid-template-columns: 1fr;
       }
 
+      .identity-card,
+      .metric,
+      .meta-card,
+      .requirement-item,
+      .info-box,
+      .reward-box,
+      .guideline-box,
+      .prize-box {
+        padding: 14px;
+      }
+
+      .task-grid {
+        gap: 16px;
+      }
+
+      .task-top {
+        margin-bottom: 14px;
+      }
+
+      .task-heading p,
+      .section-header p,
+      .grand-prize-copy p,
+      .footer-brand p,
+      .footer-copy,
+      .muted-copy,
+      .disclaimer {
+        font-size: clamp(0.86rem, 0.82rem + 0.2vw, 0.96rem);
+      }
+
+      .badge-topline {
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .summary-card {
+        grid-template-columns: 1fr;
+        align-items: start;
+      }
+
+      .summary-icon {
+        width: 52px;
+        height: 52px;
+      }
+
+      .pixel-visual {
+        min-height: 210px;
+      }
+
+      .pixel-visual img {
+        width: min(100%, 220px);
+      }
+
+      .guideline-list li,
+      .footer-link-item,
+      .footer-connect-item {
+        align-items: flex-start;
+      }
+
       .footer-inner {
+        padding: 18px;
+      }
+
+      .footer-grid {
+        grid-template-columns: 1fr;
+        gap: 18px;
+      }
+
+      .footer-links ul,
+      .footer-connect ul {
+        gap: 10px;
+      }
+
+      .footer-connect-item {
+        flex-wrap: wrap;
+      }
+
+      .footer-copy {
         flex-direction: column;
         align-items: flex-start;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .hero,
+      .section,
+      .certificate-section {
+        padding-left: 0;
+        padding-right: 0;
       }
 
       .hero-actions,
       .task-link-row {
         width: 100%;
       }
+    }
 
-      .btn,
+    @media (max-width: 480px) {
+      .container {
+        width: min(100% - 18px, var(--container));
+      }
+
+      .topbar {
+        padding-top: 10px;
+      }
+
+      .topbar-inner {
+        padding: 10px 12px;
+      }
+
+      .brand-mark {
+        gap: 10px;
+      }
+
+      .hero {
+        padding: 22px 0 22px;
+      }
+
+      .hero-panel,
+      .certificate-panel,
+      .task-card,
+      .footer-inner {
+        padding: 16px;
+        border-radius: 22px;
+      }
+
+      .eyebrow,
+      .section-chip,
+      .status-pill,
+      .badge-flag {
+        padding: 8px 10px;
+        letter-spacing: 0.05em;
+      }
+
+      .hero h1 {
+        font-size: clamp(1.55rem, 8vw, 2rem);
+      }
+
+      .hero p,
+      .section-header p,
+      .task-heading p,
+      .grand-prize-copy p,
+      .footer-brand p,
+      .disclaimer,
+      .muted-copy {
+        line-height: 1.7;
+      }
+
+      .identity-card,
+      .metric,
+      .meta-card,
+      .requirement-item,
+      .info-box,
+      .reward-box,
+      .guideline-box,
+      .prize-box,
+      .summary-card {
+        padding: 12px;
+      }
+
       .task-link,
+      .btn,
       .btn-secondary,
       .certificate-btn {
-        width: 100%;
+        min-height: 44px;
+        font-size: 0.88rem;
       }
 
-      .footer-inner {
-        padding: 20px;
-        border-radius: 24px;
+      .footer-connect-item span:last-child {
+        word-break: break-word;
       }
 
-      .footer-grid {
-        grid-template-columns: 1fr;
+      .footer-connect-icon {
+        width: 34px;
+        height: 34px;
       }
 
       .footer-copy {
-        align-items: flex-start;
-        flex-direction: column;
+        gap: 8px;
       }
     }
   </style>
@@ -1277,8 +1483,7 @@
                 <div class="eyebrow"><span class="material-symbols-outlined">auto_awesome</span> Google Gemini Student Ambassador Journey</div>
                 <h1>Welcome Future Engineers</h1>
                 <p>
-                  This portal documents my monthly tasks, events, achievements, certificates, and resources during the Google Gemini Student Ambassador Program. It serves as a polished record of my progress, participation, and milestones throughout the journey.
-                </p>
+                  This portal is the central hub for participants of the Google Gemini Student Ambassador Program. Here you'll find the latest monthly tasks, official forms, event updates, resources, and certificate links after successful participation.
 
                 <div class="identity-grid" aria-label="Student identity details">
                   <div class="identity-card">
@@ -1510,9 +1715,10 @@
             <div class="section-header">
               <div class="section-chip"><span class="material-symbols-outlined">workspace_premium</span> Certificates</div>
               <h2>Certificates</h2>
-              <p>All certificates earned during my Google Gemini Student Ambassador journey will be available here.</p>
+              <p>Participants can access and download their official event certificates here after successful verification and publication.</p>
+              <p>Certificate links will be updated after each event and task completion.</p>
             </div>
-            <a class="certificate-btn" href="#"><span class="material-symbols-outlined">contract</span> View Certificates</a>
+            <a class="certificate-btn" href="#"><span class="material-symbols-outlined">contract</span> Download Certificates</a>
           </div>
         </div>
       </section>
